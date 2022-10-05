@@ -70,13 +70,13 @@ icao2 = mihin
 etäisyys = print(f' Etäisyys lentokenttien välillä on: {round(geodesic(etaisyysicaolla(icao1), etaisyysicaolla(icao2)).km,3)} Km.')
 varmistus = input(f'Oletko varma haluatko matkustaa {mihin} ICAO-koodinen lentokentälle (K/E)?: ')
 
-while varmistus == 'K':
+while varmistus == 'K': # Tähän loopiin pitää laittaa "updatelocation" funktio (alhaalla oleva), eli se location päivitty jokaisen vuoron jälkeen
     distance = int(input(f'Kuinka monta kilometria haluat lentää? '))
     print(valikoima())
     print(etäisyys)
     print(varmistus)
 
-def updatelocation():
+def updatelocation(): #Tämä ei vielä toimi, pitää päivittää database.
     sql = '''UPDATE game SET location =''' icao2
     print(sql)
     kursori = yhteys.cursor()
