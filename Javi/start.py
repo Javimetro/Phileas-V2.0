@@ -29,15 +29,16 @@ def haelatitude():
 lat1 = haelatitude()
 lon1 = haelongitude()
 
-distance = int(input(f'Kuinka monta kilometria haluat lentää? ')) # kilometreina
+print(f' Hei Phileas! Nyt olet London City Airportissa ja sinun kordinaatit ovat: {lat1[0],lon1[0]}')
+
+distance = int(input(f'Kuinka monta kilometria haluaisit sinun ekällä matkalla lentää? ')) # kilometreina
 
 northlimit = lat1[0] + distance*0.01
 southlimit = lat1[0] - distance*0.01
 westlimit = lon1[0] + distance*0.01
 eastlimit = lon1[0] - distance*0.01
 
-print(f' London City Airport kordinaatit ovat: {lat1[0],lon1[0]}')
-print(f' North limit on: {northlimit}, south limit on: {southlimit},west limit on: {westlimit},east limit on: {eastlimit}')
+
 
 def valikoima():
     sql = f'''SELECT ident, name, latitude_deg, longitude_deg
@@ -48,10 +49,10 @@ def valikoima():
     tulos = kursori.fetchall()
     return tulos
 
-print(valikoima())
+print(f' Silla etäisyydellä voit matkustaa seuraville lentokentalle: {valikoima()}')
 
 
-mihin = input(f'Mihin haluaisit lentää seuraavaksi? (Kirjoita lentokentän ICAO-koodin) ')
+mihin = input(f'Valitse yksi niistä ja matkustetaan seuraavalle lentokentälle. Kirjoita ICAO-koodin:  ')
 
 def etaisyysicaolla(icao):
     tuple = (icao,)
@@ -61,25 +62,33 @@ def etaisyysicaolla(icao):
     kursori = yhteys.cursor()
     kursori.execute(sql, tuple)
     tulos = kursori.fetchone()
-    print(tulos)
     return tulos
 
-icao1 = 'EGLC'
+def phileaslocation():
+    sql = '''SELECT location FROM game 
+        WHERE screen_name = "Phileas Fogg"'''
+    kursori = yhteys.cursor()
+    kursori.execute(sql)
+    tulos = kursori.fetchone()
+    print(tulos)
+    return
+
+
+icao1 = phileaslocation()
 icao2 = mihin
 
 etäisyys = print(f' Etäisyys lentokenttien välillä on: {round(geodesic(etaisyysicaolla(icao1), etaisyysicaolla(icao2)).km,3)} Km.')
 varmistus = input(f'Oletko varma haluatko matkustaa {mihin} ICAO-koodinen lentokentälle (K/E)?: ')
 
-while varmistus == 'K': # Tähän loopiin pitää laittaa "updatelocation" funktio (alhaalla oleva), eli se location päivitty jokaisen vuoron jälkeen
-    distance = int(input(f'Kuinka monta kilometria haluat lentää? '))
-    print(valikoima())
-    print(etäisyys)
-    print(varmistus)
+#while varmistus == 'K': # Tähän loopiin pitää laittaa "updatelocation" funktio (alhaalla oleva), eli se location päivitty jokaisen vuoron jälkeen
+    #print(valikoima())
+    #print(etäisyys)
+    #print(varmistus)
 
-def updatelocation(): #Tämä ei vielä toimi, pitää päivittää database.
-    sql = '''UPDATE game SET location =''' icao2
-    print(sql)
-    kursori = yhteys.cursor()
-    kursori.execute(sql)
-    if kursori.rowcount == 1:
-        print("Location päivitetty")
+#def updatelocation(): #Tämä ei vielä toimi, pitää päivittää database.
+    #sql = '''UPDATE game SET location =''' icao2
+    #print(sql)
+    #kursori = yhteys.cursor()
+    #kursori.execute(sql)
+    #if kursori.rowcount == 1:
+        #print("Location päivitetty")
