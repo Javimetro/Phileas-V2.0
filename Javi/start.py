@@ -65,19 +65,19 @@ def etaisyysicaolla(icao):
     return tulos
 
 def phileaslocation():
-    sql = '''SELECT location FROM game 
-        WHERE screen_name = "Phileas Fogg"'''
+    sql = '''select latitude_deg, longitude_deg
+    from airport, game
+    where screen_name = "Phileas Fogg" and location = ident'''
     kursori = yhteys.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchone()
     print(tulos)
-    return
+    return tulos
 
 
-icao1 = phileaslocation()
 icao2 = mihin
 
-etäisyys = print(f' Etäisyys lentokenttien välillä on: {round(geodesic(etaisyysicaolla(icao1), etaisyysicaolla(icao2)).km,3)} Km.')
+etäisyys = print(f' Etäisyys lentokenttien välillä on: {round(geodesic(phileaslocation(), etaisyysicaolla(icao2)).km,3)} Km.')
 varmistus = input(f'Oletko varma haluatko matkustaa {mihin} ICAO-koodinen lentokentälle (K/E)?: ')
 
 #while varmistus == 'K': # Tähän loopiin pitää laittaa "updatelocation" funktio (alhaalla oleva), eli se location päivitty jokaisen vuoron jälkeen
