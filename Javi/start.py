@@ -39,7 +39,6 @@ westlimit = lon1[0] + distance*0.01
 eastlimit = lon1[0] - distance*0.01
 
 
-
 def valikoima():
     sql = f'''SELECT ident, name, latitude_deg, longitude_deg
     FROM Airport WHERE latitude_deg BETWEEN {southlimit} AND {northlimit}
@@ -80,19 +79,20 @@ icao2 = mihin
 etäisyys = print(f' Etäisyys lentokenttien välillä on: {round(geodesic(icao1, etaisyysicaolla(icao2)).km,3)} Km.')
 varmistus = input(f'Oletko varma haluatko matkustaa {mihin} ICAO-koodinen lentokentälle (K/E)?: ')
 
-#while varmistus == 'K': # Tähän loopiin pitää laittaa "updatelocation" funktio (alhaalla oleva), eli se location päivitty jokaisen vuoron jälkeen
+#while varmistus == 'K': # Tähän loopiin pitää laittaa "updatelocation" funktio (alhaalla oleva), eli Phileasin location päivitty jokaisen vuoron jälkeen
     #print(valikoima())
     #print(etäisyys)
     #print(varmistus)
 
-def updatelocation(icao1): #Tämä ei vielä toimi...
-    sql = "UPDATE game SET location=" + icao2 + '''WHERE screen_name = "Phileas Fogg"'''
-    print(sql)
+def updatelocation(icao): #Tämä ei vielä toimi...
+    sql = '''UPDATE game SET location= %s WHERE screen_name = "Phileas Fogg"'''
+    tuple = (icao,)
+    print(sql, tuple)
     kursori = yhteys.cursor()
-    kursori.execute(sql)
+    kursori.execute(sql,tuple)
     if kursori.rowcount == 1:
         print("LOCATION UPDATED")
 
-updatelocation(icao1)
+updatelocation(icao2)
 
 print(icao1)
