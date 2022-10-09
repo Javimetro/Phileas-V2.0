@@ -7,7 +7,7 @@ yhteys =mysql.connector.connect(
          password='Torstai22#',
          autocommit=True
          )
-
+#nämä ovat placeholdereita kokeiluja varten
 budjetti_1=1000
 matkakustannus=700
 alennus=500
@@ -21,13 +21,18 @@ def hae_budjetti():
     kursori.execute(sql)
     tulos = kursori.fetchone()
     return tulos
-print(f"Budjettisi on alussa {hae_budjetti()}. Tämän lisäksi saat joka matkan jälkeen hieman lisärahaa")
+print(f"Budjettisi on alussa {hae_budjetti()}. Tämän lisäksi saat joka matkan jälkeen hieman lisärahaa.")
 
-def paivita_budjetti():
-    budjetti=1000
-    sql="UPDATE game SET co2_budget="+str(budjetti)
+#tämä osa ei toimi vielä
+def paivita_budjetti(alennus,matkahinta):
+
+    sql=f'''UPDATE game SET co2_budget=co2_budget+{alennus}-{matkahinta}'''
     print(sql)
-    kursori = yhteys.cursor()
+    kursori=yhteys.cursor()
     kursori.execute(sql)
     tulos=kursori.fetchone()
-    return
+    return tulos
+
+#laitetaan kaksi parametria
+paivita_budjetti(1,1000)
+print(hae_budjetti())
