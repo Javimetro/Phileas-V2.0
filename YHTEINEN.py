@@ -1,6 +1,7 @@
 import mysql.connector
 from geopy.distance import geodesic
 import random
+
 yhteys = mysql.connector.connect(
          host='127.0.0.1',
          port= 3306,
@@ -9,22 +10,6 @@ yhteys = mysql.connector.connect(
          password='rootformaria',
          autocommit=True
          )
-
-def haelongitude():
-    sql = '''SELECT longitude_deg FROM airport 
-    WHERE name = "London City Airport"'''
-    kursori = yhteys.cursor()
-    kursori.execute(sql)
-    tulos = kursori.fetchone()
-    return tulos
-
-def haelatitude():
-    sql = '''SELECT latitude_deg FROM airport 
-    WHERE name = "London City Airport"'''
-    kursori = yhteys.cursor()
-    kursori.execute(sql)
-    tulos = kursori.fetchone()
-    return tulos
 
 def updatelocation(icao):
     sql = '''UPDATE game SET location= %s WHERE screen_name = "Phileas Fogg"'''
@@ -35,11 +20,34 @@ def updatelocation(icao):
     if kursori.rowcount == 1:
         print("LOCATION UPDATED")
 
+updatelocation('EGLC')
+
+def haelongitude():
+    sql = '''select longitude_deg
+    from airport, game
+    where screen_name = "Phileas Fogg" and location = ident'''
+    kursori = yhteys.cursor()
+    kursori.execute(sql)
+    tulos = kursori.fetchone()
+    return tulos
+
+def haelatitude():
+    sql = '''select latitude_deg
+    from airport, game
+    where screen_name = "Phileas Fogg" and location = ident'''
+    kursori = yhteys.cursor()
+    kursori.execute(sql)
+    tulos = kursori.fetchone()
+    return tulos
+
+
+
 lat1 = haelatitude()
 lon1 = haelongitude()
 
 print(f'Hei Phileas! Nyt olet London City Airportilla ja koordinaattisi ovat: {lat1[0],lon1[0]}')
-distance = int(input(f'Kuinka monta kilometria haluaisit lentää ekalla matkallasi? ')) # kilometreina
+distance = int(input(f'Kuinka monta kilometria haluaisit lentää ekalla matkallasi? '))
+
 northlimit = lat1[0] + distance*0.01
 southlimit = lat1[0] - distance*0.01
 westlimit = lon1[0] + distance*0.01
@@ -83,10 +91,10 @@ def phileaslocation():
     print(tulos)
     return tulos
 
-icao1 = phileaslocation()
+phileaskordinaatit = phileaslocation()
 icao2 = mihin
 
-etäisyys = print(f' Etäisyys lentokenttien välillä on: {round(geodesic(icao1, etaisyysicaolla(icao2)).km,3)} Km.')
+etäisyys = print(f' Etäisyys lentokenttien välillä on: {round(geodesic(phileaskordinaatit, etaisyysicaolla(icao2)).km,3)} Km.')
 varmistus = input(f'Oletko varma, että haluat matkustaa {mihin} lentokentälle (K/E)?: ')
 #while varmistus == 'K': # Tähän loopiin pitää laittaa "updatelocation" funktio (alhaalla oleva), eli Phileasin location päivitty jokaisen vuoron jälkeen
     #print(valikoima())
@@ -94,4 +102,5 @@ varmistus = input(f'Oletko varma, että haluat matkustaa {mihin} lentokentälle 
     #print(varmistus)
 
 updatelocation(icao2)
-print(icao1)
+
+phileaslocation()
