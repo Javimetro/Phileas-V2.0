@@ -91,16 +91,29 @@ def phileaslocation():
     print(tulos)
     return tulos
 
-phileaskordinaatit = phileaslocation()
+phileaslocation()
 icao2 = mihin
 
-etäisyys = print(f' Etäisyys lentokenttien välillä on: {round(geodesic(phileaskordinaatit, etaisyysicaolla(icao2)).km,3)} Km.')
+etäisyys = print(f' Etäisyys lentokenttien välillä on: {round(geodesic(phileaslocation(), etaisyysicaolla(icao2)).km,3)} Km.')
 varmistus = input(f'Oletko varma, että haluat matkustaa {mihin} lentokentälle (K/E)?: ')
-#while varmistus == 'K': # Tähän loopiin pitää laittaa "updatelocation" funktio (alhaalla oleva), eli Phileasin location päivitty jokaisen vuoron jälkeen
-    #print(valikoima())
-    #print(etäisyys)
-    #print(varmistus)
 
-updatelocation(icao2)
-
-phileaslocation()
+while True: # 'While' Ei ole vielä valmis. ehkä 'for' toimii paremmin. Ongelmia saada 'etäisyys' toimimaan hyvin. Luulen että käyttää aina EGLC icao ykkösenä.
+    if varmistus == 'K':
+        updatelocation(icao2)
+        print(f'Hienoa! Matka on suoritettu ja nyt sinun koordinaattisi ovat: {phileaslocation()}')
+        distance = int(input(f'Kuinka monta kilometria haluaisit lentää seuraavalla matkallasi? '))
+        print(f'Sillä etäisyydellä voit matkustaa seuraaville lentokentille: {vaihtoehdot()}')
+        mihin = input(f'Valitse yksi niistä ja matkustetaan sille lentokentälle. Kirjoita ICAO-koodi:  ')
+        phileaslocation()
+        icao2 = mihin
+        etäisyys = print(f' Etäisyys lentokenttien välillä on: {round(geodesic(phileaslocation(), etaisyysicaolla(icao2)).km,3)} Km.')
+    else:
+        print(f'Eikö raha riitä? Ei hätää, minä voin tarjota sinulle uusia vaihtoehtoja. Valitse uudestaan, ehkä löydät jotain edullisempaa.')
+        distance = int(input(f'Kuinka monta kilometria haluaisit lentää seuraavalla matkallasi? '))
+        print(f'Sillä etäisyydellä voit matkustaa seuraaville lentokentille: {vaihtoehdot()}')
+        mihin = input(f'Valitse yksi niistä ja matkustetaan sille lentokentälle. Kirjoita ICAO-koodi:  ')
+        phileaslocation()
+        icao2 = mihin
+        etäisyys = print(
+            f' Etäisyys lentokenttien välillä on: {round(geodesic(phileaslocation(), etaisyysicaolla(icao2)).km, 3)} Km.')
+    varmistus = input(f'Oletko varma, että haluat matkustaa {mihin} lentokentälle (K/E)?: ')
