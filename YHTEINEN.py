@@ -117,3 +117,4 @@ while True: # 'While' Ei ole vielä valmis. ehkä 'for' toimii paremmin. Ongelmi
         etäisyys = print(
             f' Etäisyys lentokenttien välillä on: {round(geodesic(phileaslocation(), etaisyysicaolla(icao2)).km, 3)} Km.')
     varmistus = input(f'Oletko varma, että haluat matkustaa {mihin} lentokentälle (K/E)?: ')
+
