@@ -7,7 +7,7 @@ yhteys = mysql.connector.connect(
          port= 3306,
          database='flight_game',
          user='root',
-         password='rootformaria',
+         password='123',
          autocommit=True
          )
 
@@ -91,11 +91,53 @@ def phileaslocation():
     print(tulos)
     return tulos
 
+
+def onkoAlennusAlue(icao):
+    tuple = (icao,)
+    sql = '''SELECT latitude_deg FROM airport 
+    WHERE ident = %s'''
+    kursori = yhteys.cursor()
+    kursori.execute(sql, tuple)
+    tulos = kursori.fetchone()
+    if 20 < tulos[0] < 40:
+        print('Olet alennusalueella. Saat 50% alennusta.')
+        return 0.5
+    elif 40 <= tulos[0] <= 60:
+        print('Matkasi hinta on suoraan verrannollinen kuljettuun matkaan.')
+        return 1
+    elif 0 < tulos[0] < 20:
+        print('Olet alennusalueella. Saat 70% alennusta.')
+        return 0.7
+    elif 60 < tulos[0] < 80:
+        print('Olet korkeammalla alueella. Joudut maksamaan 30% enemmän.')
+        return 1.3
+    else:
+        print('Et voi matkustaa tälle alueelle.')
+        return False
+
+# ei vielä ratkaisu rajalle. Pitää kirjoittaa loopi???
+def hintakaava(km):
+    hinta = km/10 * onkoAlennusAlue(icao2)
+    if False:
+        return distance
+    else:
+        return hinta
+
+
 phileaslocation()
 icao2 = mihin
 
 etäisyys = print(f' Etäisyys lentokenttien välillä on: {round(geodesic(phileaslocation(), etaisyysicaolla(icao2)).km,3)} Km.')
+km = round(geodesic(phileaslocation(), etaisyysicaolla(icao2)).km,3)
+
+hinta = hintakaava(km)
+
+print(f'Valitulle lentoasemalle suuntautuvan lennon hinta on {hinta:.2f} €')
+
 varmistus = input(f'Oletko varma, että haluat matkustaa {mihin} lentokentälle (K/E)?: ')
+
+
+
 
 while True: # 'While' Ei ole vielä valmis. ehkä 'for' toimii paremmin. Ongelmia saada 'etäisyys' toimimaan hyvin. Luulen että käyttää aina EGLC icao ykkösenä.
     if varmistus == 'K':
@@ -107,6 +149,8 @@ while True: # 'While' Ei ole vielä valmis. ehkä 'for' toimii paremmin. Ongelmi
         phileaslocation()
         icao2 = mihin
         etäisyys = print(f' Etäisyys lentokenttien välillä on: {round(geodesic(phileaslocation(), etaisyysicaolla(icao2)).km,3)} Km.')
+        km = round(geodesic(phileaslocation(), etaisyysicaolla(icao2)).km, 3)
+        hinta = print(f'Valitulle lentoasemalle suuntautuvan lennon hinta on {hintakaava(km):.2f} €')
     else:
         print(f'Eikö raha riitä? Ei hätää, minä voin tarjota sinulle uusia vaihtoehtoja. Valitse uudestaan, ehkä löydät jotain edullisempaa.')
         distance = int(input(f'Kuinka monta kilometria haluaisit lentää seuraavalla matkallasi? '))
@@ -114,7 +158,13 @@ while True: # 'While' Ei ole vielä valmis. ehkä 'for' toimii paremmin. Ongelmi
         mihin = input(f'Valitse yksi niistä ja matkustetaan sille lentokentälle. Kirjoita ICAO-koodi:  ')
         phileaslocation()
         icao2 = mihin
-        etäisyys = print(
-            f' Etäisyys lentokenttien välillä on: {round(geodesic(phileaslocation(), etaisyysicaolla(icao2)).km, 3)} Km.')
+        etäisyys = print(f' Etäisyys lentokenttien välillä on: {round(geodesic(phileaslocation(), etaisyysicaolla(icao2)).km, 3)} Km.')
+        km = round(geodesic(phileaslocation(), etaisyysicaolla(icao2)).km, 3)
+        hinta = print(f'Valitulle lentoasemalle suuntautuvan lennon hinta on {hintakaava(km):.2f} €')
     varmistus = input(f'Oletko varma, että haluat matkustaa {mihin} lentokentälle (K/E)?: ')
+
+
+
+
+
 
