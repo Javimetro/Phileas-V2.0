@@ -24,7 +24,7 @@ def hae_budjetti():
     return tulos
 print(f"Budjettisi on alussa {hae_budjetti()}. Tämän lisäksi saat joka matkan jälkeen hieman lisärahaa.")
 
-#tämä osa ei toimi vielä
+
 def paivita_budjetti(alennus,matkakustannus):
 
     sql=f'''UPDATE peli SET co2_budget=co2_budget+{alennus}-{matkakustannus} WHERE id={peli_id}'''
