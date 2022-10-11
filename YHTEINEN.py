@@ -7,7 +7,7 @@ yhteys = mysql.connector.connect(
          port=3306,
          database='flight_game',
          user='root',
-         password='123',
+         password='rootformaria',
          autocommit=True
          )
 
@@ -51,16 +51,17 @@ def valikoima():
         southlimit = 0
     if northlimit > 80:
         northlimit = 80
-    if 0 < eastlimit < 180:
+    if -180 < eastlimit < 180:
         sql = f'''SELECT ident, name, latitude_deg, longitude_deg
             FROM Airport WHERE latitude_deg BETWEEN {southlimit} AND {northlimit}
             AND longitude_deg BETWEEN {westlimit} AND {eastlimit}'''
-    else:
+    elif eastlimit > 180:
         eastlimit = eastlimit - 360
 
         sql = f'''SELECT ident, name, latitude_deg, longitude_deg
             FROM Airport WHERE latitude_deg BETWEEN {southlimit} AND {northlimit}
-            AND longitude_deg BETWEEN {eastlimit} AND {westlimit}'''
+            AND longitude_deg BETWEEN {-180} AND {eastlimit} AND {westlimit} AND {180}'''
+
     kursori = yhteys.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchall()
