@@ -61,7 +61,7 @@ def valikoima():
         sql = f'''SELECT ident, name, latitude_deg, longitude_deg
             FROM Airport WHERE latitude_deg BETWEEN {southlimit} AND {northlimit}
             AND longitude_deg BETWEEN {-180} AND {eastlimit} AND {westlimit} AND {180}'''
-    print(sql)
+
     kursori = yhteys.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchall()
