@@ -4,23 +4,22 @@ import random
 
 yhteys = mysql.connector.connect(
          host='127.0.0.1',
-         port= 3306,
+         port=3306,
          database='flight_game',
          user='root',
          password='123',
          autocommit=True
          )
 
+# poistettiin rivin 'print'
 def updatelocation(icao):
     sql = '''UPDATE game SET location= %s WHERE screen_name = "Phileas Fogg"'''
     tuple = (icao,)
-    print(sql, tuple)
     kursori = yhteys.cursor()
     kursori.execute(sql,tuple)
     if kursori.rowcount == 1:
         print("LOCATION UPDATED")
 
-updatelocation('EGLC')
 
 def haelongitude():
     sql = '''select longitude_deg
@@ -31,6 +30,7 @@ def haelongitude():
     tulos = kursori.fetchone()
     return tulos
 
+
 def haelatitude():
     sql = '''select latitude_deg
     from airport, game
@@ -40,36 +40,33 @@ def haelatitude():
     tulos = kursori.fetchone()
     return tulos
 
-
-
-lat1 = haelatitude()
-lon1 = haelongitude()
-
-print(f'Hei Phileas! Nyt olet London City Airportilla ja koordinaattisi ovat: {lat1[0],lon1[0]}')
-distance = int(input(f'Kuinka monta kilometria haluaisit lentää ekalla matkallasi? '))
-
-northlimit = lat1[0] + distance*0.01
-southlimit = lat1[0] - distance*0.01
-westlimit = lon1[0] + distance*0.01
-eastlimit = lon1[0] - distance*0.01
-
+# Siirrettiin limits funktioon, koska niitä tarvitaan vain funktiossa eikä niitä käytetä missään muualla.
+# Lisättiin myös rajat funktioon, nyt se toimi
 def valikoima():
+    northlimit = lat1[0] + distance * 0.01
+    southlimit = lat1[0] - distance * 0.01
+    westlimit = lon1[0]
+    eastlimit = lon1[0] + distance * 0.01
+    if southlimit < 0:
+        southlimit = 0
+    if northlimit > 80:
+        northlimit = 80
     sql = f'''SELECT ident, name, latitude_deg, longitude_deg
     FROM Airport WHERE latitude_deg BETWEEN {southlimit} AND {northlimit}
-    AND longitude_deg BETWEEN {eastlimit} AND {westlimit}'''
+    AND longitude_deg BETWEEN {westlimit} AND {eastlimit}'''
     kursori = yhteys.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchall()
     return tulos
 
+# Ei saa antaa samaa nimiä funktiolle ja muuttajalle
 def vaihtoehdot():
-    vaihtoehdot = {}
+    vaihtoehdot1 = {}
+    tulos = valikoima()
     for i in range(4):
-        vaihtoehdot[i+1] = random.choice(valikoima())
-    return vaihtoehdot
+        vaihtoehdot1[i+1] = random.choice(tulos)
+    return vaihtoehdot1
 
-print(f'Sillä etäisyydellä voit matkustaa seuraaville lentokentille: {vaihtoehdot()}')
-mihin = input(f'Valitse yksi niistä ja matkustetaan sille lentokentälle. Kirjoita ICAO-koodi:  ')
 
 def etaisyysicaolla(icao):
     tuple = (icao,)
@@ -80,6 +77,7 @@ def etaisyysicaolla(icao):
     kursori.execute(sql, tuple)
     tulos = kursori.fetchone()
     return tulos
+
 
 def phileaslocation():
     sql = '''select latitude_deg, longitude_deg
@@ -107,64 +105,56 @@ def onkoAlennusAlue(icao):
         return 1
     elif 0 < tulos[0] < 20:
         print('Olet alennusalueella. Saat 70% alennusta.')
-        return 0.7
+        return 0.3
     elif 60 < tulos[0] < 80:
         print('Olet korkeammalla alueella. Joudut maksamaan 30% enemmän.')
         return 1.3
-    else:
-        print('Et voi matkustaa tälle alueelle.')
-        return False
 
-# ei vielä ratkaisu rajalle. Pitää kirjoittaa loopi???
+
 def hintakaava(km):
     hinta = km/10 * onkoAlennusAlue(icao2)
-    if False:
-        return distance
-    else:
-        return hinta
+    return hinta
 
 
-phileaslocation()
-icao2 = mihin
+def hae_budjetti():
+    sql = f'''SELECT co2_budget FROM game'''
+    kursori = yhteys.cursor()
+    kursori.execute(sql)
+    tulos = kursori.fetchone()
+    return tulos[0]
 
-etäisyys = print(f' Etäisyys lentokenttien välillä on: {round(geodesic(phileaslocation(), etaisyysicaolla(icao2)).km,3)} Km.')
-km = round(geodesic(phileaslocation(), etaisyysicaolla(icao2)).km,3)
+# Siirettiin kaikki funktiot ylös ja toiminnot alas
 
-hinta = hintakaava(km)
+updatelocation('EGLC')
+lat1 = haelatitude()
+lon1 = haelongitude()
+print(f'Hei Phileas! Nyt olet London City Airportilla ja koordinaattisi ovat: {lat1[0],lon1[0]}')
+budjetti = hae_budjetti()
+print(f"Budjettisi on alussa {budjetti}€. Tämän lisäksi saat joka matkan jälkeen hieman lisärahaa.")
 
-print(f'Valitulle lentoasemalle suuntautuvan lennon hinta on {hinta:.2f} €')
+while budjetti > 0:
+    distance = int(input(f'Kuinka monta kilometria haluaisit lentää? '))
 
-varmistus = input(f'Oletko varma, että haluat matkustaa {mihin} lentokentälle (K/E)?: ')
+    print(f'Sillä etäisyydellä voit matkustaa seuraaville lentokentille: \n {vaihtoehdot()}')
+    mihin = input(f'Valitse yksi niistä ja matkustetaan sille lentokentälle. Kirjoita ICAO-koodi:  ')
 
+    phileaslocation()
+    icao2 = mihin
 
+    km = round(geodesic(phileaslocation(), etaisyysicaolla(icao2)).km, 3)
+    print(f' Etäisyys lentokenttien välillä on: {km} Km.')
 
+    hinta = hintakaava(km)
+    print(f'Valitulle lentoasemalle suuntautuvan lennon hinta on {hinta:.2f} €')
 
-while True: # 'While' Ei ole vielä valmis. ehkä 'for' toimii paremmin. Ongelmia saada 'etäisyys' toimimaan hyvin. Luulen että käyttää aina EGLC icao ykkösenä.
+    varmistus = input(f'Oletko varma, että haluat matkustaa {mihin} lentokentälle (K/E)?: ')
     if varmistus == 'K':
         updatelocation(icao2)
-        print(f'Hienoa! Matka on suoritettu ja nyt sinun koordinaattisi ovat: {phileaslocation()}')
-        distance = int(input(f'Kuinka monta kilometria haluaisit lentää seuraavalla matkallasi? '))
-        print(f'Sillä etäisyydellä voit matkustaa seuraaville lentokentille: {vaihtoehdot()}')
-        mihin = input(f'Valitse yksi niistä ja matkustetaan sille lentokentälle. Kirjoita ICAO-koodi:  ')
-        phileaslocation()
-        icao2 = mihin
-        etäisyys = print(f' Etäisyys lentokenttien välillä on: {round(geodesic(phileaslocation(), etaisyysicaolla(icao2)).km,3)} Km.')
-        km = round(geodesic(phileaslocation(), etaisyysicaolla(icao2)).km, 3)
-        hinta = print(f'Valitulle lentoasemalle suuntautuvan lennon hinta on {hintakaava(km):.2f} €')
+        lat1 = haelatitude()
+        lon1 = haelongitude()
+        # budget calc from Lenni
+        budjetti = budjetti - hinta
+        # Pitää kirjoittaa jotain kaunista
+        print(f'Noni, nyt sinä olet ..., sinun budjettisi on {budjetti:.2f} €')
     else:
-        print(f'Eikö raha riitä? Ei hätää, minä voin tarjota sinulle uusia vaihtoehtoja. Valitse uudestaan, ehkä löydät jotain edullisempaa.')
-        distance = int(input(f'Kuinka monta kilometria haluaisit lentää seuraavalla matkallasi? '))
-        print(f'Sillä etäisyydellä voit matkustaa seuraaville lentokentille: {vaihtoehdot()}')
-        mihin = input(f'Valitse yksi niistä ja matkustetaan sille lentokentälle. Kirjoita ICAO-koodi:  ')
-        phileaslocation()
-        icao2 = mihin
-        etäisyys = print(f' Etäisyys lentokenttien välillä on: {round(geodesic(phileaslocation(), etaisyysicaolla(icao2)).km, 3)} Km.')
-        km = round(geodesic(phileaslocation(), etaisyysicaolla(icao2)).km, 3)
-        hinta = print(f'Valitulle lentoasemalle suuntautuvan lennon hinta on {hintakaava(km):.2f} €')
-    varmistus = input(f'Oletko varma, että haluat matkustaa {mihin} lentokentälle (K/E)?: ')
-
-
-
-
-
-
+        print("Oho! Ehkä budjettisi ei riittä... Ei haita! Yritetään uudestaan. Valitse uusi vaihtoehto, joka sopii paremmin.")
