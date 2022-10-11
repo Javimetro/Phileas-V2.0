@@ -7,7 +7,7 @@ yhteys = mysql.connector.connect(
          port=3306,
          database='flight_game',
          user='root',
-         password='rootformaria',
+         password='123',
          autocommit=True
          )
 
@@ -61,7 +61,7 @@ def valikoima():
         sql = f'''SELECT ident, name, latitude_deg, longitude_deg
             FROM Airport WHERE latitude_deg BETWEEN {southlimit} AND {northlimit}
             AND longitude_deg BETWEEN {-180} AND {eastlimit} AND {westlimit} AND {180}'''
-
+    print(sql)
     kursori = yhteys.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchall()
@@ -69,11 +69,12 @@ def valikoima():
 
 # Ei saa antaa samaa nimiä funktiolle ja muuttajalle
 def vaihtoehdot():
-    vaihtoehdot1 = {}
+    vaihtoehdot1 = []
     tulos = valikoima()
     for i in range(4):
-        vaihtoehdot1[i+1] = random.choice(tulos)
+        vaihtoehdot1.append(random.choice(tulos))
     return vaihtoehdot1
+
 
 
 def etaisyysicaolla(icao):
@@ -144,11 +145,16 @@ print(f"Budjettisi on alussa {budjetti}€. Tämän lisäksi saat joka matkan j�
 while budjetti > 0:
     distance = int(input(f'Kuinka monta kilometriä haluaisit lentää? '))
 
-    print(f'Sillä etäisyydellä voit matkustaa seuraaville lentokentille: \n {vaihtoehdot()}')
-    mihin = input(f'Valitse niistä yksi ja matkustetaan sille lentokentälle. Kirjoita ICAO-koodi:  ')
+    print(f'Sillä etäisyydellä voit matkustaa seuraaville lentokentille:\n')
+    tulos = vaihtoehdot()
+    i = 1
+    for n in tulos:
+        print(f'{i}: {n}')
+        i = i + 1
+    mihin = input(f'\n Valitse niistä yksi ja matkustetaan sille lentokentälle. Kirjoita numero:  ')
 
     phileaslocation()
-    icao2 = mihin
+    icao2 = tulos[int(mihin) - 1][0]
 
     km = round(geodesic(phileaslocation(), etaisyysicaolla(icao2)).km, 3)
     print(f' Etäisyys lentokenttien välillä on: {km} Km.')
