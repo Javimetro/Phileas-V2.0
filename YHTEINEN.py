@@ -128,15 +128,15 @@ def hae_budjetti():
 updatelocation('EGLC')
 lat1 = haelatitude()
 lon1 = haelongitude()
-print(f'Hei Phileas! Nyt olet London City Airportilla ja koordinaattisi ovat: {lat1[0],lon1[0]}')
+print(f'Hei Phileas! Olet nyt London City Airportilla ja koordinaattisi ovat: {lat1[0],lon1[0]}')
 budjetti = hae_budjetti()
 print(f"Budjettisi on alussa {budjetti}€. Tämän lisäksi saat joka matkan jälkeen hieman lisärahaa.")
 
 while budjetti > 0:
-    distance = int(input(f'Kuinka monta kilometria haluaisit lentää? '))
+    distance = int(input(f'Kuinka monta kilometriä haluaisit lentää? '))
 
     print(f'Sillä etäisyydellä voit matkustaa seuraaville lentokentille: \n {vaihtoehdot()}')
-    mihin = input(f'Valitse yksi niistä ja matkustetaan sille lentokentälle. Kirjoita ICAO-koodi:  ')
+    mihin = input(f'Valitse niistä yksi ja matkustetaan sille lentokentälle. Kirjoita ICAO-koodi:  ')
 
     phileaslocation()
     icao2 = mihin
@@ -157,4 +157,4 @@ while budjetti > 0:
         # Pitää kirjoittaa jotain kaunista
         print(f'Noni, nyt sinä olet ..., sinun budjettisi on {budjetti:.2f} €')
     else:
-        print("Oho! Ehkä budjettisi ei riittä... Ei haita! Yritetään uudestaan. Valitse uusi vaihtoehto, joka sopii paremmin.")
+        print("Oho! Ehkä budjettisi ei riitä... Ei haittaa! Yritetään uudestaan. Valitse uusi vaihtoehto, joka sopii paremmin.")
