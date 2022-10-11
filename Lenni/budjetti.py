@@ -11,8 +11,8 @@ yhteys =mysql.connector.connect(
 budjetti_1=1000
 matkakustannus=700
 alennus=500
-peli_id=2
-print(f'Sinut on haastettu matkaamaan maailman ympäri. Hyvää onnea!')
+peli_id=1
+print(f'Sinut on haastettu matkaamaan maailman ympäri. Hyvää onnea!
 
 #Testaan aluksi että budjetin päivitys tietokantaan onnistui
 
@@ -25,9 +25,9 @@ def hae_budjetti():
 print(f"Budjettisi on alussa {hae_budjetti()}. Tämän lisäksi saat joka matkan jälkeen hieman lisärahaa.")
 
 
-def paivita_budjetti(alennus,matkakustannus):
+def paivita_budjetti(hinta):
 
-    sql=f'''UPDATE game SET co2_budget=co2_budget+{alennus}-{matkakustannus} WHERE id={peli_id}'''
+    sql=f'''UPDATE game SET co2_budget=co2_budget+100-{hinta} WHERE id={peli_id}'''
     print(sql)
     kursori=yhteys.cursor()
     kursori.execute(sql)
