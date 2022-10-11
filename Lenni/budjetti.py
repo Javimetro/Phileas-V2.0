@@ -9,7 +9,7 @@ yhteys =mysql.connector.connect(
          )
 #nämä ovat placeholdereita kokeiluja varten
 budjetti_1=1000
-matkakustannus=100000
+matkakustannus=700
 alennus=500
 peli_id=2
 print(f'Sinut on haastettu matkaamaan maailman ympäri. Hyvää onnea!')
@@ -17,7 +17,7 @@ print(f'Sinut on haastettu matkaamaan maailman ympäri. Hyvää onnea!')
 #Testaan aluksi että budjetin päivitys tietokantaan onnistui
 
 def hae_budjetti():
-    sql=f'''SELECT co2_budget FROM peli WHERE id={peli_id} '''
+    sql=f'''SELECT co2_budget FROM game WHERE id={peli_id} '''
     kursori = yhteys.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchone()
@@ -27,23 +27,22 @@ print(f"Budjettisi on alussa {hae_budjetti()}. Tämän lisäksi saat joka matkan
 
 def paivita_budjetti(alennus,matkakustannus):
 
-    sql=f'''UPDATE peli SET co2_budget=co2_budget+{alennus}-{matkakustannus} WHERE id={peli_id}'''
+    sql=f'''UPDATE game SET co2_budget=co2_budget+{alennus}-{matkakustannus} WHERE id={peli_id}'''
     print(sql)
     kursori=yhteys.cursor()
     kursori.execute(sql)
     tulos=kursori.fetchone()
     return tulos
 
-
-
-
 def tarkista_budjetti():
-    sql=f'''SELECT screen_name FROM peli WHERE id={peli_id} AND co2_budget<=0'''
+    sql=f'''SELECT screen_name FROM game WHERE id={peli_id} AND co2_budget<=0'''
     print(sql)
     kursori=yhteys.cursor()
     kursori.execute(sql)
     tulos=kursori.fetchall()
     return tulos
+
+
 
 if len(tarkista_budjetti())>0:
     print("Peli ohi")
