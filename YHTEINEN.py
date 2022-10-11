@@ -51,9 +51,16 @@ def valikoima():
         southlimit = 0
     if northlimit > 80:
         northlimit = 80
-    sql = f'''SELECT ident, name, latitude_deg, longitude_deg
-    FROM Airport WHERE latitude_deg BETWEEN {southlimit} AND {northlimit}
-    AND longitude_deg BETWEEN {westlimit} AND {eastlimit}'''
+    if 0 < eastlimit < 180:
+        sql = f'''SELECT ident, name, latitude_deg, longitude_deg
+            FROM Airport WHERE latitude_deg BETWEEN {southlimit} AND {northlimit}
+            AND longitude_deg BETWEEN {westlimit} AND {eastlimit}'''
+    else:
+        eastlimit = eastlimit - 360
+
+        sql = f'''SELECT ident, name, latitude_deg, longitude_deg
+            FROM Airport WHERE latitude_deg BETWEEN {southlimit} AND {northlimit}
+            AND longitude_deg BETWEEN {eastlimit} AND {westlimit}'''
     kursori = yhteys.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchall()
@@ -132,6 +139,7 @@ print(f'Hei Phileas! Nyt olet London City Airportilla ja koordinaattisi ovat: {l
 budjetti = hae_budjetti()
 print(f"Budjettisi on alussa {budjetti}€. Tämän lisäksi saat joka matkan jälkeen hieman lisärahaa.")
 
+
 while budjetti > 0:
     distance = int(input(f'Kuinka monta kilometria haluaisit lentää? '))
 
@@ -148,13 +156,13 @@ while budjetti > 0:
     print(f'Valitulle lentoasemalle suuntautuvan lennon hinta on {hinta:.2f} €')
 
     varmistus = input(f'Oletko varma, että haluat matkustaa {mihin} lentokentälle (K/E)?: ')
-    if varmistus == 'K':
+    if varmistus == 'K' and budjetti > hinta:
         updatelocation(icao2)
         lat1 = haelatitude()
         lon1 = haelongitude()
         # budget calc from Lenni
         budjetti = budjetti - hinta
         # Pitää kirjoittaa jotain kaunista
-        print(f'Noni, nyt sinä olet ..., sinun budjettisi on {budjetti:.2f} €')
+        print(f'No niin, nyt sinun koordinaattisi ovat {lat1[0], lon1[0]}, budjettisi on {budjetti:.2f} €')
     else:
         print("Oho! Ehkä budjettisi ei riittä... Ei haita! Yritetään uudestaan. Valitse uusi vaihtoehto, joka sopii paremmin.")
