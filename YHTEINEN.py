@@ -8,7 +8,7 @@ yhteys = mysql.connector.connect(
          port=3306,
          database='flight_game',
          user='root',
-         password='123',
+         password='1417',
          autocommit=True
          )
 
@@ -169,6 +169,7 @@ def tarkista_budjetti():
     return tulos[0]
 
 
+vuorot = 0
 updatelocation('EGLC')
 aloitusbudjetti()
 lat1 = haelatitude()
@@ -221,6 +222,7 @@ while budjetti > 0:
 
     varmistus = input(f'Oletko varma, että haluat matkustaa {mihin} lentokentälle (K/E)?: ')
     if varmistus == 'K' and budjetti > hinta:
+
         updatelocation(icao2)
 
         lat1 = haelatitude()
@@ -228,12 +230,12 @@ while budjetti > 0:
         paivita_budjetti(hinta, lisaraha(hinta))
         budjetti = tarkista_budjetti()
         yht_etaisyys = yht_etaisyys + km
+        vuorot += 1
 
         if phileaslocation() == (51.505299, 0.055278):
-            print('Onneksi olkoon! Olet päässyt takaisin Lontooseen!')
+            print(f'Onneksi olkoon! Olet päässyt takaisin Lontooseen! \nLensit yhteensä {vuorot} kertaa ja kilometrejä kertyi yhteensä {yht_etaisyys}')
             break
         else:
             print(f'No niin, nyt sinun koordinaattisi ovat {lat1[0], lon1[0]}, budjettisi on {budjetti:.2f} €')
     else:
         print("Oho! Ehkä budjettisi ei riitä... Ei haittaa! Yritetään uudestaan. Valitse uusi vaihtoehto, joka sopii paremmin.")
-
