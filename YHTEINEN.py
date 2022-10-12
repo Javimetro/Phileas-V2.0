@@ -181,12 +181,13 @@ updatelocation('EGLC')
 aloitusbudjetti()
 lat1 = haelatitude()
 lon1 = haelongitude()
-print("Olet maailmankuulu maailmanmaatkaaja Phileas Fogg ja sinut on haastettu matkustamaan maailman ympäri niin nopeasti kuin pysyt."
+print("Olet maailmankuulu maailmanmatkaaja Phileas Fogg ja sinut on haastettu matkustamaan maailman ympäri niin nopeasti kuin pysyt."
       "\nLennät maailman ympäri valitsemalla haluamasi matkan pituuden, mutta muista että pideämmät matkat ovat kalliimpia!"
       "\nAloitat kotoasi Lontoosta ja sinne haluat myös palata voittaaksesi."
       "\nOnnea matkaan, toivottavasti reisussa kestää tällä kertaa vähemmän kuin 80 päivää!\n")
 print(f'Hei Phileas! Olet nyt London City Airportilla ja koordinaattisi ovat: {lat1[0],lon1[0]}')
 budjetti = hae_budjetti()
+aloitusbudjetti = hae_budjetti()
 print(f"Budjettisi on alussa {budjetti}€. Tämän lisäksi saat joka matkan jälkeen hieman lisärahaa.")
 
 yht_etaisyys = 0
@@ -238,11 +239,12 @@ while budjetti > 0:
         print('')
         paivita_budjetti(hinta, lisaraha(hinta))
         budjetti = tarkista_budjetti()
+        lopullinenbudjetti= aloitusbudjetti - budjetti
         yht_etaisyys = yht_etaisyys + km
         vuorot += 1
 
         if phileaslocation() == (51.505299, 0.055278):
-            print(f'Onneksi olkoon! Olet päässyt takaisin Lontooseen! \nLensit yhteensä {vuorot} kertaa ja kilometrejä kertyi yhteensä {yht_etaisyys}')
+            print(f'Onneksi olkoon! Olet päässyt takaisin Lontooseen! \nLensit yhteensä {vuorot} kertaa, kilometrejä kertyi yhteensä {yht_etaisyys} ja käytit {lopullinenbudjetti:.2f}€ verran rahaa')
             break
         else:
             print(f'No niin, nyt sinun koordinaattisi ovat {lat1[0], lon1[0]}, budjettisi on {budjetti:.2f} €')
