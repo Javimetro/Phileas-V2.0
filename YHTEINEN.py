@@ -8,11 +8,11 @@ yhteys = mysql.connector.connect(
          port=3306,
          database='flight_game',
          user='root',
-         password='Torstai22#',
+         password='123',
          autocommit=True
          )
 
-# poistettiin rivin 'print'
+
 def updatelocation(icao):
     sql = '''UPDATE game SET location= %s WHERE screen_name = "Phileas Fogg"'''
     tuple = (icao,)
@@ -41,8 +41,7 @@ def haelatitude():
     tulos = kursori.fetchone()
     return tulos
 
-# Siirrettiin limits funktioon, koska niitä tarvitaan vain funktiossa eikä niitä käytetä missään muualla.
-# Lisättiin myös rajat funktioon, nyt se toimi
+
 def valikoima():
     northlimit = lat1[0] + kilometrit * 0.01
     southlimit = lat1[0] - kilometrit * 0.01
@@ -77,7 +76,6 @@ def vaihtoehdot():
     return vaihtoehdot1
 
 
-
 def etaisyysicaolla(icao):
     tuple = (icao,)
     sql = '''SELECT latitude_deg, longitude_deg 
@@ -100,7 +98,7 @@ def phileaslocation():
     return tulos
 
 def londoncityairport():
-    sql = '''select latitude_deg, longitude_deg
+    sql = '''select ident, name, latitude_deg, longitude_deg
         from airport
         where ident = "EGLC"'''
     kursori = yhteys.cursor()
@@ -138,6 +136,7 @@ def lisaraha(hinta):
     raha = hinta * 0.7
     return raha
 
+
 def aloitusbudjetti():
     sql = f'''UPDATE game SET co2_budget=3000 WHERE id=1'''
     kursori = yhteys.cursor()
@@ -145,8 +144,9 @@ def aloitusbudjetti():
     tulos = kursori.fetchone()
     return tulos
 
+
 def hae_budjetti():
-    sql = f'''SELECT co2_budget FROM game'''
+    sql = f'''SELECT co2_budget FROM game WHERE id=1'''
     kursori = yhteys.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchone()
@@ -154,7 +154,6 @@ def hae_budjetti():
 
 
 def paivita_budjetti(hinta,raha):
-
     sql = f'''UPDATE game SET co2_budget=co2_budget-{hinta}+{raha} WHERE id=1'''
     kursori=yhteys.cursor()
     kursori.execute(sql)
@@ -170,36 +169,43 @@ def tarkista_budjetti():
     return tulos[0]
 
 
-
-# Siirettiin kaikki funktiot ylös ja toiminnot alas
-
 updatelocation('EGLC')
 aloitusbudjetti()
 lat1 = haelatitude()
 lon1 = haelongitude()
-print("Olet maailmankuulu maailmanmaatkaaja Phileas Fogg ja sinut on haastettu matkustamaan maailman ympäri niin nopeasti kuin pysyt.\nLennät maailman ympäri valitsemalla haluamasi matkan pituuden, mutta muista että pideämmät matkat ovat kalliimpia!\nAloitat kotoasi Lontoosta ja sinne haluat myös palata voittaaksesi.\nOnnea matkaan, toivottavasti reisussa kestää tällä kertaa vähemmän kuin 80 päivää!")
+print("Olet maailmankuulu maailmanmaatkaaja Phileas Fogg ja sinut on haastettu matkustamaan maailman ympäri niin nopeasti kuin pysyt."
+      "\nLennät maailman ympäri valitsemalla haluamasi matkan pituuden, mutta muista että pideämmät matkat ovat kalliimpia!"
+      "\nAloitat kotoasi Lontoosta ja sinne haluat myös palata voittaaksesi."
+      "\nOnnea matkaan, toivottavasti reisussa kestää tällä kertaa vähemmän kuin 80 päivää!\n")
 print(f'Hei Phileas! Olet nyt London City Airportilla ja koordinaattisi ovat: {lat1[0],lon1[0]}')
 budjetti = hae_budjetti()
 print(f"Budjettisi on alussa {budjetti}€. Tämän lisäksi saat joka matkan jälkeen hieman lisärahaa.")
 
-
+yht_etaisyys = 0
 while budjetti > 0:
     kilometrit = int(input(f'Kuinka monta kilometriä haluaisit lentää? '))
 
-    etaisyysLCA = distance.distance(phileaslocation(), londoncityairport())
-    print(f'etäisyys londonCA: {etaisyysLCA}')
-    if kilometrit >= etaisyysLCA:
-        varmistus = input('Voit matkustaa takaisin London City Airportiin. Haluatko palata sinne? (K/E): ')
-        if varmistus == 'K':
-            updatelocation('EGLC')
-            break
-
     print(f'Sillä etäisyydellä voit matkustaa seuraaville lentokentille:\n')
     tulos = vaihtoehdot()
+
+    if yht_etaisyys > 5000:
+        lontoo = londoncityairport()
+        etaisyysLCA = distance.distance(phileaslocation(), lontoo[2:])
+        print(f'etäisyys londonCA: {etaisyysLCA}')
+        if -50 < lon1[0] < 3 and kilometrit >= etaisyysLCA:
+            tulos.append(lontoo)
+
     i = 1
     for n in tulos:
         print(f'{i}: {n}')
         i = i + 1
+
+
+    ''' varmistus = input('Voit matkustaa takaisin London City Airportiin. Haluatko palata sinne? (K/E): ')
+    if varmistus == 'K':
+        updatelocation('EGLC')
+        break'''
+
     mihin = input(f'\n Valitse niistä yksi ja matkustetaan sille lentokentälle. Kirjoita numero:  ')
 
     phileaslocation()
@@ -214,17 +220,18 @@ while budjetti > 0:
     varmistus = input(f'Oletko varma, että haluat matkustaa {mihin} lentokentälle (K/E)?: ')
     if varmistus == 'K' and budjetti > hinta:
         updatelocation(icao2)
+
         lat1 = haelatitude()
         lon1 = haelongitude()
         paivita_budjetti(hinta, lisaraha(hinta))
         budjetti = tarkista_budjetti()
+        yht_etaisyys = yht_etaisyys + km
 
-        # budget calc from Lenni
-        # budjetti = budjetti - hinta
-        # Pitää kirjoittaa jotain kaunista
-        print(f'No niin, nyt sinun koordinaattisi ovat {lat1[0], lon1[0]}, budjettisi on {budjetti:.2f} €')
+        if phileaslocation() == (51.505299, 0.055278):
+            print('Onneksi olkoon! Olet päässyt takaisin Lontooseen!')
+            break
+        else:
+            print(f'No niin, nyt sinun koordinaattisi ovat {lat1[0], lon1[0]}, budjettisi on {budjetti:.2f} €')
     else:
         print("Oho! Ehkä budjettisi ei riitä... Ei haittaa! Yritetään uudestaan. Valitse uusi vaihtoehto, joka sopii paremmin.")
 
-if phileaslocation() == (51.505299, 0.055278):
-    print('Onneksi olkoon! Olet päässyt takaisin Lontooseen!')
