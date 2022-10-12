@@ -8,7 +8,7 @@ yhteys = mysql.connector.connect(
          port=3306,
          database='flight_game',
          user='root',
-         password='1417',
+         password='rootformaria',
          autocommit=True
          )
 
@@ -94,7 +94,6 @@ def phileaslocation():
     kursori = yhteys.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchone()
-    print(tulos)
     return tulos
 
 def londoncityairport():
@@ -105,6 +104,14 @@ def londoncityairport():
     kursori.execute(sql)
     tulos = kursori.fetchone()
     return tulos
+def city_country():
+    sql = '''select airport.municipality, country.name from airport, country, game 
+    where screen_name='Phileas Fogg' and  game.location=airport.ident and airport.iso_country=country.iso_country;'''
+    kursori = yhteys.cursor()
+    kursori.execute(sql)
+    tulos = kursori.fetchall()
+    for i in tulos:
+        print(f'{i[0]} ,{i[1]}')
 
 def onkoAlennusAlue(icao):
     tuple = (icao,)
@@ -223,10 +230,12 @@ while budjetti > 0:
     varmistus = input(f'Oletko varma, että haluat matkustaa {mihin} lentokentälle (K/E)?: ')
     if varmistus == 'K' and budjetti > hinta:
 
+        print('')
         updatelocation(icao2)
-
+        city_country()
         lat1 = haelatitude()
         lon1 = haelongitude()
+        print('')
         paivita_budjetti(hinta, lisaraha(hinta))
         budjetti = tarkista_budjetti()
         yht_etaisyys = yht_etaisyys + km
