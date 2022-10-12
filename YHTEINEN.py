@@ -1,5 +1,6 @@
 import mysql.connector
 from geopy.distance import geodesic
+from geopy import distance
 import random
 
 yhteys = mysql.connector.connect(
@@ -7,7 +8,7 @@ yhteys = mysql.connector.connect(
          port=3306,
          database='flight_game',
          user='root',
-         password='123',
+         password='1417',
          autocommit=True
          )
 
@@ -43,10 +44,10 @@ def haelatitude():
 # Siirrettiin limits funktioon, koska niitä tarvitaan vain funktiossa eikä niitä käytetä missään muualla.
 # Lisättiin myös rajat funktioon, nyt se toimi
 def valikoima():
-    northlimit = lat1[0] + distance * 0.01
-    southlimit = lat1[0] - distance * 0.01
+    northlimit = lat1[0] + kilometrit * 0.01
+    southlimit = lat1[0] - kilometrit * 0.01
     westlimit = lon1[0]
-    eastlimit = lon1[0] + distance * 0.01
+    eastlimit = lon1[0] + kilometrit * 0.01
     if southlimit < 0:
         southlimit = 0
     if northlimit > 80:
@@ -98,6 +99,14 @@ def phileaslocation():
     print(tulos)
     return tulos
 
+def londoncityairport():
+    sql = '''select latitude_deg, longitude_deg
+        from airport
+        where ident = "EGLC"'''
+    kursori = yhteys.cursor()
+    kursori.execute(sql)
+    tulos = kursori.fetchone()
+    return tulos
 
 def onkoAlennusAlue(icao):
     tuple = (icao,)
@@ -167,7 +176,7 @@ print(f"Budjettisi on alussa {budjetti}€. Tämän lisäksi saat joka matkan j�
 
 
 while budjetti > 0:
-    distance = int(input(f'Kuinka monta kilometriä haluaisit lentää? '))
+    kilometrit = int(input(f'Kuinka monta kilometriä haluaisit lentää? '))
 
     print(f'Sillä etäisyydellä voit matkustaa seuraaville lentokentille:\n')
     tulos = vaihtoehdot()
@@ -188,14 +197,25 @@ while budjetti > 0:
 
     varmistus = input(f'Oletko varma, että haluat matkustaa {mihin} lentokentälle (K/E)?: ')
     if varmistus == 'K' and budjetti > hinta:
+        etaisyysLCA = distance.distance(phileaslocation(), londoncityairport())
+        print(f'etäisyys londonCA: {etaisyysLCA}')
+        if kilometrit >= etaisyysLCA:
+            varmistus = input('Voit matkustaa takaisin London City Airportiin. Haluatko palata sinne? (K/E): ')
+            if varmistus == 'K':
+                updatelocation('EGLC')
+                break
         updatelocation(icao2)
         lat1 = haelatitude()
         lon1 = haelongitude()
         paivita_budjetti(hinta, lisaraha(hinta))
         budjetti = tarkista_budjetti()
+
         # budget calc from Lenni
         # budjetti = budjetti - hinta
         # Pitää kirjoittaa jotain kaunista
         print(f'No niin, nyt sinun koordinaattisi ovat {lat1[0], lon1[0]}, budjettisi on {budjetti:.2f} €')
     else:
         print("Oho! Ehkä budjettisi ei riitä... Ei haittaa! Yritetään uudestaan. Valitse uusi vaihtoehto, joka sopii paremmin.")
+
+if phileaslocation() == (51.505299, 0.055278):
+    print('Onneksi olkoon! Olet päässyt takaisin Lontooseen!')
