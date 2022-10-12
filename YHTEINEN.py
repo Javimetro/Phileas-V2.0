@@ -210,6 +210,8 @@ while budjetti > 0:
 
     hinta = hintakaava(km)
     print(f'Valitulle lentoasemalle lähtevän lennon hinta on {hinta:.2f} €')
+    print(f'Valitusta lennosta saamasi lisäraha on {lisaraha(hinta):.2f} €')
+
 
     varmistus = input(f'Oletko varma, että haluat matkustaa {mihin} lentokentälle (K/E)?: ')
     if varmistus == 'K' and budjetti > hinta:
