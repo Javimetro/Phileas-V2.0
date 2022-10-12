@@ -178,6 +178,14 @@ print(f"Budjettisi on alussa {budjetti}€. Tämän lisäksi saat joka matkan j�
 while budjetti > 0:
     kilometrit = int(input(f'Kuinka monta kilometriä haluaisit lentää? '))
 
+    etaisyysLCA = distance.distance(phileaslocation(), londoncityairport())
+    print(f'etäisyys londonCA: {etaisyysLCA}')
+    if kilometrit >= etaisyysLCA:
+        varmistus = input('Voit matkustaa takaisin London City Airportiin. Haluatko palata sinne? (K/E): ')
+        if varmistus == 'K':
+            updatelocation('EGLC')
+            break
+
     print(f'Sillä etäisyydellä voit matkustaa seuraaville lentokentille:\n')
     tulos = vaihtoehdot()
     i = 1
@@ -197,13 +205,6 @@ while budjetti > 0:
 
     varmistus = input(f'Oletko varma, että haluat matkustaa {mihin} lentokentälle (K/E)?: ')
     if varmistus == 'K' and budjetti > hinta:
-        etaisyysLCA = distance.distance(phileaslocation(), londoncityairport())
-        print(f'etäisyys londonCA: {etaisyysLCA}')
-        if kilometrit >= etaisyysLCA:
-            varmistus = input('Voit matkustaa takaisin London City Airportiin. Haluatko palata sinne? (K/E): ')
-            if varmistus == 'K':
-                updatelocation('EGLC')
-                break
         updatelocation(icao2)
         lat1 = haelatitude()
         lon1 = haelongitude()
