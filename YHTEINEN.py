@@ -7,7 +7,7 @@ yhteys = mysql.connector.connect(
          port=3306,
          database='flight_game',
          user='root',
-         password='123',
+         password='Torstai22#',
          autocommit=True
          )
 
@@ -137,6 +137,13 @@ def hae_budjetti():
     tulos = kursori.fetchone()
     return tulos[0]
 
+def aloitusbudjetti():
+
+    sql = f'''UPDATE game SET co2_budget=3000 WHERE id=1'''
+    kursori=yhteys.cursor()
+    kursori.execute(sql)
+    tulos=kursori.fetchone()
+    return tulos
 
 def paivita_budjetti(hinta,raha):
 
@@ -157,8 +164,9 @@ def tarkista_budjetti():
 
 
 # Siirettiin kaikki funktiot ylös ja toiminnot alas
-
+print("Olet maailmankuulu tutkimusmatkailija Phileas Fogg ja sinut on haastettu matkustamaan maailman ympäri mahdollisimman nopeasti.\nAloitat seikkailusi Lontoosta. Sieltä pääset valitsemaan seuraavan lentoaseman, sen mukaan kuinka pitkälle haluat lentää.\nMuista että pidemmät lennot ovat kalliimpia!")
 updatelocation('EGLC')
+aloitusbudjetti()
 lat1 = haelatitude()
 lon1 = haelongitude()
 print(f'Hei Phileas! Olet nyt London City Airportilla ja koordinaattisi ovat: {lat1[0],lon1[0]}')
