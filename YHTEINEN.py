@@ -124,6 +124,9 @@ def hintakaava(km):
     hinta = km/10 * onkoAlennusAlue(icao2)
     return hinta
 
+def lisaraha(hinta):
+    raha=hinta * 0.3
+    return raha
 
 def hae_budjetti():
     sql = f'''SELECT co2_budget FROM game'''
@@ -131,6 +134,22 @@ def hae_budjetti():
     kursori.execute(sql)
     tulos = kursori.fetchone()
     return tulos[0]
+def paivita_budjetti(hinta,raha):
+
+    sql=f'''UPDATE game SET co2_budget=co2_budget-{hinta}+{raha} WHERE id=1'''
+    kursori=yhteys.cursor()
+    kursori.execute(sql)
+    tulos=kursori.fetchone()
+    return tulos
+
+def tarkista_budjetti():
+    sql=f'''SELECT screen_name FROM game WHERE id=1 AND co2_budget<=0'''
+    kursori=yhteys.cursor()
+    kursori.execute(sql)
+    tulos=kursori.fetchall()
+    return tulos
+
+
 
 # Siirettiin kaikki funktiot ylös ja toiminnot alas
 
@@ -167,6 +186,9 @@ while budjetti > 0:
         updatelocation(icao2)
         lat1 = haelatitude()
         lon1 = haelongitude()
+        lisaraha(hinta)
+        paivita_budjetti(hinta, lisaraha)
+        tarkista_budjetti()
         # budget calc from Lenni
         budjetti = budjetti - hinta
         # Pitää kirjoittaa jotain kaunista
