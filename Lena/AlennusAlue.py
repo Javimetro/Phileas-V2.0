@@ -32,3 +32,36 @@ mihin = input(f'Valitse yksi niistä ja matkustetaan seuraavalle lentokentälle.
 icao2 = mihin
 
 print(f'Lentokennan {icao2} aluella on alennus {onkoAlennusAlue(icao2)}')
+
+
+
+def valikoima2():
+    northlimit = lat1[0] + distance * 0.01
+    southlimit = lat1[0] - distance * 0.01
+    if southlimit < 0:
+        southlimit = 0
+    if northlimit > 80:
+        northlimit = 80
+
+
+    westlimit = lon1[0]
+    eastlimit = lon1[0] + distance * 0.01
+
+    if eastlimit > 180:
+        eastlimit = eastlimit - 360
+
+    if westlimit > 0 and eastlimit < 0:
+        op = 'OR'
+    else:
+        op = 'AND'
+
+    sql = f'''SELECT ident, name, latitude_deg, longitude_deg
+            FROM Airport WHERE latitude_deg BETWEEN {southlimit} AND {northlimit}
+            AND longitude_deg > {westlimit} {op} longitude_deg < {eastlimit}'''
+    print(sql)
+
+    kursori = yhteys.cursor()
+    kursori.execute(sql)
+    tulos = kursori.fetchall()
+    return tulos
+
