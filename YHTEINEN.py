@@ -246,13 +246,17 @@ while budjetti > 0:
     if varmistus == 'K':
 
         print('')
+        paivita_budjetti(hinta, lisaraha(hinta))
+        budjetti = tarkista_budjetti()
+        if budjetti < 0:
+            print('Upsis! Sinulla ei ole rahaa enää. Peli ohi :(')
+            break
         updatelocation(icao2)
         city_country()
         lat1 = haelatitude()
         lon1 = haelongitude()
         print('')
-        paivita_budjetti(hinta, lisaraha(hinta))
-        budjetti = tarkista_budjetti()
+
         lopullinenbudjetti = lopullinenbudjetti + hinta
         yht_etaisyys = yht_etaisyys + km
         vuorot += 1
@@ -264,5 +268,3 @@ while budjetti > 0:
             print(f'No niin, nyt sinun koordinaattisi ovat {lat1[0], lon1[0]}, budjettisi on {budjetti:.2f} €')
     else:
         print("Oho! Ehkä budjettisi ei riitä... Ei haittaa! Yritetään uudestaan. Valitse uusi vaihtoehto, joka sopii paremmin.")
-else:
-    print('Upsis! Sinulla ei ole rahaa enää. Peli ohi')
