@@ -8,7 +8,7 @@ yhteys = mysql.connector.connect(
          port=3306,
          database='flight_game',
          user='root',
-         password='rootformaria',
+         password='123',
          autocommit=True
          )
 
@@ -96,6 +96,7 @@ def phileaslocation():
     tulos = kursori.fetchone()
     return tulos
 
+
 def londoncityairport():
     sql = '''select ident, name, latitude_deg, longitude_deg
         from airport
@@ -104,6 +105,8 @@ def londoncityairport():
     kursori.execute(sql)
     tulos = kursori.fetchone()
     return tulos
+
+
 def city_country():
     sql = '''select airport.municipality, country.name from airport, country, game 
     where screen_name='Phileas Fogg' and  game.location=airport.ident and airport.iso_country=country.iso_country;'''
@@ -112,6 +115,7 @@ def city_country():
     tulos = kursori.fetchall()
     for i in tulos:
         print(f'{i[0]} ,{i[1]}')
+
 
 def onkoAlennusAlue(icao):
     tuple = (icao,)
@@ -140,12 +144,12 @@ def hintakaava(km):
 
 
 def lisaraha(hinta):
-    raha = hinta * 0.7
+    raha = hinta * 0.5
     return raha
 
 
 def aloitusbudjetti():
-    sql = f'''UPDATE game SET co2_budget=3000 WHERE id=1'''
+    sql = f'''UPDATE game SET co2_budget=1000 WHERE id=1'''
     kursori = yhteys.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchone()
@@ -192,15 +196,18 @@ budjetti = hae_budjetti()
 aloitusbudjetti = hae_budjetti()
 print(f"Budjettisi on alussa {budjetti}€. Tämän lisäksi saat joka matkan jälkeen hieman lisärahaa.")
 input('')
-print('Ennen kuin aloitat matkasi, on tärkeää, että sinulla on tietoa lippujen hinnoista ja niiden suhteesta etäisyyksiin.'"\nMatkasi hinta riippuu leveysasteista, joiden välillä lennät.\n")
+print('Ennen kuin aloitat matkasi, on tärkeää, että sinulla on tietoa lippujen hinnoista ja niiden suhteesta etäisyyksiin.'
+      "\nMatkasi hinta riippuu leveysasteista, joiden välillä lennät.")
 input('')
 print('*Leveysasteet 40-60: Matkakustannukset ovat suoraan verrannollisia matkan pituuteen, koska lähtö- ja tulopaikka sijaitsevat tällä alueella.')
 input('')
-print('*Leveysasteet 20-40: Näillä alueilla matkasi hinta on 30 prosenttia halvempi, mutta matka voi kestää hieman kauemmin.''\nMaapallon ympärillä oleva matka alkaa pidentyä koska meridiaanien välinen etäisyys on suurempi kuin Lontoossa.\n')
+print('*Leveysasteet 20-40: Näillä alueilla matkasi hinta on 30 prosenttia halvempi, mutta matka voi kestää hieman kauemmin.'
+      '\nMaapallon ympärillä oleva matka alkaa pidentyä koska meridiaanien välinen etäisyys on suurempi kuin Lontoossa.')
 input('')
 print('*Leveysasteet 0-20: Täällä liput ovat todella halpoja (70 % alennus!), mutta matka maapallon ympäri on kaikista pisin. Lennät lähellä päiväntasaajaa.')
 input('')
-print('*Leveysasteet 60-80: Tämä alue on lähellä pohjoisnapaa, ja täällä ei kestä kauan lentää maailman ympäri (meridiaanien välinen etäisyys on hyvin pieni). Tästä syystä liput ovat 30 prosenttia kalliimpia.')
+print('*Leveysasteet 60-80: Tämä alue on lähellä pohjoisnapaa, ja täällä ei kestä kauan lentää maailman ympäri (meridiaanien välinen etäisyys on hyvin pieni). '
+      '\nTästä syystä liput ovat 30 prosenttia kalliimpia.')
 input('')
 
 yht_etaisyys = 0
@@ -213,8 +220,8 @@ while budjetti > 0:
     if yht_etaisyys > 5000:
         lontoo = londoncityairport()
         etaisyysLCA = distance.distance(phileaslocation(), lontoo[2:])
-        print(f'etäisyys londonCA: {etaisyysLCA}')
-        if -50 < lon1[0] < 3 and kilometrit >= etaisyysLCA:
+        print(f'etäisyys Lontoosta: {etaisyysLCA}\n')
+        if -50 < lon1[0] < 5 and kilometrit >= etaisyysLCA:
             tulos.append(lontoo)
 
     i = 1
@@ -235,8 +242,8 @@ while budjetti > 0:
     print(f'Valitusta lennosta saamasi lisäraha on {lisaraha(hinta):.2f} €')
 
 
-    varmistus = input(f'Oletko varma, että haluat matkustaa {mihin} lentokentälle (K/E)?: ')
-    if varmistus == 'K' and budjetti > hinta:
+    varmistus = input(f'Oletko varma, että haluat matkustaa {icao2} lentokentälle (K/E)?: ')
+    if varmistus == 'K':
 
         print('')
         updatelocation(icao2)
@@ -246,7 +253,7 @@ while budjetti > 0:
         print('')
         paivita_budjetti(hinta, lisaraha(hinta))
         budjetti = tarkista_budjetti()
-        lopullinenbudjetti= lopullinenbudjetti + hinta
+        lopullinenbudjetti = lopullinenbudjetti + hinta
         yht_etaisyys = yht_etaisyys + km
         vuorot += 1
 
@@ -257,3 +264,5 @@ while budjetti > 0:
             print(f'No niin, nyt sinun koordinaattisi ovat {lat1[0], lon1[0]}, budjettisi on {budjetti:.2f} €')
     else:
         print("Oho! Ehkä budjettisi ei riitä... Ei haittaa! Yritetään uudestaan. Valitse uusi vaihtoehto, joka sopii paremmin.")
+else:
+    print('Upsis! Sinulla ei ole rahaa enää. Peli ohi')
