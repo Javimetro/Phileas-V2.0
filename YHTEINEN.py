@@ -185,9 +185,19 @@ print("Olet maailmankuulu maailmanmaatkaaja Phileas Fogg ja sinut on haastettu m
       "\nLennät maailman ympäri valitsemalla haluamasi matkan pituuden, mutta muista että pideämmät matkat ovat kalliimpia!"
       "\nAloitat kotoasi Lontoosta ja sinne haluat myös palata voittaaksesi."
       "\nOnnea matkaan, toivottavasti reisussa kestää tällä kertaa vähemmän kuin 80 päivää!\n")
-print(f'Hei Phileas! Olet nyt London City Airportilla ja koordinaattisi ovat: {lat1[0],lon1[0]}')
+input('-Paina näppäintä ja aloitetaan matka-')
+print(f'Olet nyt London City Airportilla ja koordinaattisi ovat: {lat1[0],lon1[0]}')
 budjetti = hae_budjetti()
 print(f"Budjettisi on alussa {budjetti}€. Tämän lisäksi saat joka matkan jälkeen hieman lisärahaa.")
+input('')
+print('Ennen kuin aloitat matkasi, on tärkeää, että sinulla on tietoa lippujen hinnoista ja niiden suhteesta etäisyyksiin.'"\nMatkasi hinta riippuu leveysasteista, joiden välillä lennät.\n")
+input('')
+print('*Leveysasteet 40-60: Matkakustannukset ovat suoraan verrannollisia matkan pituuteen, koska lähtö- ja tulopaikka sijaitsevat tällä alueella.')
+input('')
+print('*Leveysasteet 20-40: Näillä alueilla matkasi hinta on 30 prosenttia halvempi, mutta matka voi kestää hieman kauemmin.''\nMaapallon ympärillä oleva matka alkaa pidentyä koska meridiaanien välinen etäisyys on suurempi kuin Lontoossa.\n')
+input('')
+print('*Leveysasteet 0-20: Täällä liput ovat todella halpoja (70 % alennus!), mutta matka maapallon ympäri on kaikista pisin. lennät lähellä päiväntasaajaa.')
+input('')
 
 yht_etaisyys = 0
 while budjetti > 0:
