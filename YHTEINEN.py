@@ -197,7 +197,9 @@ print('*Leveysasteet 40-60: Matkakustannukset ovat suoraan verrannollisia matkan
 input('')
 print('*Leveysasteet 20-40: Näillä alueilla matkasi hinta on 30 prosenttia halvempi, mutta matka voi kestää hieman kauemmin.''\nMaapallon ympärillä oleva matka alkaa pidentyä koska meridiaanien välinen etäisyys on suurempi kuin Lontoossa.\n')
 input('')
-print('*Leveysasteet 0-20: Täällä liput ovat todella halpoja (70 % alennus!), mutta matka maapallon ympäri on kaikista pisin. lennät lähellä päiväntasaajaa.')
+print('*Leveysasteet 0-20: Täällä liput ovat todella halpoja (70 % alennus!), mutta matka maapallon ympäri on kaikista pisin. Lennät lähellä päiväntasaajaa.')
+input('')
+print('*Leveysasteet 60-80: Tämä alue on lähellä pohjoisnapaa, ja täällä ei kestä kauan lentää maailman ympäri (meridiaanien välinen etäisyys on hyvin pieni). Tästä syystä liput ovat 30 prosenttia kalliimpia.')
 input('')
 
 yht_etaisyys = 0
