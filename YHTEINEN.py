@@ -177,6 +177,7 @@ def tarkista_budjetti():
 
 
 vuorot = 0
+lopullinenbudjetti = 0
 updatelocation('EGLC')
 aloitusbudjetti()
 lat1 = haelatitude()
@@ -221,12 +222,6 @@ while budjetti > 0:
         print(f'{i}: {n}')
         i = i + 1
 
-
-    ''' varmistus = input('Voit matkustaa takaisin London City Airportiin. Haluatko palata sinne? (K/E): ')
-    if varmistus == 'K':
-        updatelocation('EGLC')
-        break'''
-
     mihin = input(f'\n Valitse niistä yksi ja matkustetaan sille lentokentälle. Kirjoita numero:  ')
 
     phileaslocation()
@@ -251,7 +246,7 @@ while budjetti > 0:
         print('')
         paivita_budjetti(hinta, lisaraha(hinta))
         budjetti = tarkista_budjetti()
-        lopullinenbudjetti= aloitusbudjetti - budjetti
+        lopullinenbudjetti= lopullinenbudjetti + hinta
         yht_etaisyys = yht_etaisyys + km
         vuorot += 1
 
