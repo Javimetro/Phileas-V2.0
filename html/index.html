@@ -8,12 +8,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"/>
     <link href="../css/style.css" rel="stylesheet">
     <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js" defer></script>
-
-    <!--lentokonekuvakkeet nimen ympärillä, voi luultavasti poistaa-->
-    <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.esm.js" defer></script>
-    <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.js" defer></script>
-
-    <script src="js/main.js" defer></script>
+    <script src="../js/map.js" defer></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,30 +21,24 @@
 <div class="container">
     <header class="page-header">
         <h1 class="page-title">Maailman ympäri</h1>
-
     </header>
 
     <main class="flex-wrap">
-        <div id="map">
-            <img class="responsive-img" src="../img/karttaaa.png" alt="temporary map(will be replaced later)">
-        </div>
+        <div id="map"></div>
         <div class="boxes">
             <section class="box">
                 <header>
-                    <h2>Pelin status</h2>
+                    <h2>Status</h2>
                 </header>
                 <table>
                     <tr>
-                        <td colspan="4">Pelaajan nimi</td>
+                        <td colspan="4">(Pelaajan nimi)</td>
                     </tr>
                     <tr>
                         <td>Jäljellä oleva budjetti: <span id="budjetti">0</span>€</td>
                     </tr>
                     <tr>
                         <td>Matka Lontooseen: <span id="matka">0</span> km</td>
-                    </tr>
-                    <tr>
-                        <td>Leveysastetiedot (?)</td>
                     </tr>
                 </table>
             </section>
@@ -67,18 +56,19 @@
                     <tr>
                         <td>Lennetyt kilometrit: <span id="kilometrit">0</span> km</td>
                     </tr>
+                    <tr>
+                        <td>Leveysastetiedot (?)</td>
+                    </tr>
                 </table>
             </section>
         </div>
     </main>
 </div>
-
 <div id="player-modal" class="hide">
     <form id="player-form">
         <input type="text" placeholder="Syötä nimesi" required>
         <input type="submit" value="OK">
     </form>
 </div>
-
 </body>
 </html>
