@@ -8,4 +8,5 @@ DB_NAME=somename
 DB_USER=someuser
 DB_PASS=somepassword
 API_KEY=openweathermap_api_key
+PORT=someport/5000/3000
 ```

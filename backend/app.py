@@ -3,7 +3,7 @@ import os
 
 import mysql.connector
 from dotenv import load_dotenv
-from flask import Flask, Response  #request
+from flask import Flask, Response, request
 from flask_cors import CORS
 
 import config
@@ -67,9 +67,13 @@ def flyto(km_lkm):
 @app.route('/newgame')
 def newgame():
 
-    # CREATE NEW USER IN DB
-    # SET INITIAL DATA IN DB
-    # user = { id: 123, screen_name: r,
+    args = request.args
+    user = args.get('name')
+
+    sql = f'''INSERT INTO game SET screen_name = "{user}"'''
+    kursori = config.conn.cursor()
+    kursori.execute(sql)
+    userId = kursori.lastrowid
 
     YHTEINEN.vuorot = 0
     YHTEINEN.lopullinenbudjetti = 0
@@ -77,13 +81,21 @@ def newgame():
     YHTEINEN.aloitusbudjetti()
     lat1 = YHTEINEN.haelatitude()
     lon1 = YHTEINEN.haelongitude()
-    # json_data = {
-    #     "id": ,
-    #     "location": ,
-    #     "budget": ,
-    #     "name": ,
-    # }
-    return { "message": f'Olet nyt London City Airportilla ja koordinaattisi ovat: {lat1[0],lon1[0]}'}
+
+    sql = f'''SELECT * from game where id = "{userId}"'''
+    kursori.execute(sql)
+    vastaus = kursori.fetchone()
+
+    jsonVast = {
+        'id': vastaus[0],
+        'name': vastaus[4],
+        'location': vastaus[3],
+        'budget': vastaus[2],
+        'consumed': vastaus[1]
+    }
+    kursori.close()
+    return jsonVast
+
 
 if __name__ == '__main__':
-    app.run(use_reloader=True, host='127.0.0.1', port=5000)
+    app.run(use_reloader=True, host='127.0.0.1', port=os.environ.get('PORT'))
