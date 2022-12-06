@@ -8,6 +8,9 @@ from flask_cors import CORS
 
 import config
 from game import Game
+import YHTEINEN
+
+
 
 load_dotenv()
 
@@ -43,8 +46,10 @@ config.conn = mysql.connector.connect(
 @app.route('/km/<km_lkm>')
 def flyto(km_lkm):
     km_lkm = float(km_lkm)
+
+
     vastaus = {
-        'km_lkm' : km_lkm
+        'km_lkm': YHTEINEN.vaihtoehdot(km_lkm)
     }
     jsonvast = json.dumps(vastaus)
     return Response(response=jsonvast, mimetype="application/json")
@@ -59,13 +64,26 @@ def flyto(km_lkm):
 
 
 # http://127.0.0.1:5000/newgame?player=Vesa&loc=EFHK
-# @app.route('/newgame')
-# def newgame():
-#     args = request.args
-#     player = args.get("player")
-#     dest = args.get("loc")
-#     json_data = fly(0, dest, 0, player)
-#     return json_data
+@app.route('/newgame')
+def newgame():
+
+    # CREATE NEW USER IN DB
+    # SET INITIAL DATA IN DB
+    # user = { id: 123, screen_name: r,
+
+    YHTEINEN.vuorot = 0
+    YHTEINEN.lopullinenbudjetti = 0
+    YHTEINEN.updatelocation('EGLC')
+    YHTEINEN.aloitusbudjetti()
+    lat1 = YHTEINEN.haelatitude()
+    lon1 = YHTEINEN.haelongitude()
+    # json_data = {
+    #     "id": ,
+    #     "location": ,
+    #     "budget": ,
+    #     "name": ,
+    # }
+    return { "message": f'Olet nyt London City Airportilla ja koordinaattisi ovat: {lat1[0],lon1[0]}'}
 
 if __name__ == '__main__':
     app.run(use_reloader=True, host='127.0.0.1', port=5000)
