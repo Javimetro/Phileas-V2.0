@@ -41,13 +41,17 @@ config.conn = mysql.connector.connect(
 #     json_data = json.dumps(game, default=lambda o: o.__dict__, indent=4)
 #     return json_data
 
-@app.route('/kilometria/<km_lkm>')
-def airportList(km_lkm):
-    km_lkm = int(km_lkm)
-    # YHTEINEN.valikoima(km_lkm)
+#http://127.0.0.1:5000/kilometria?id=1&km=1000
+@app.route('/kilometria')
+def airportList():
+    args = request.args
+    userId = args.get('id')
+    km_lkm = args.get('km')
+    YHTEINEN.valikoima(km_lkm,userId)
     vastaus = {
+        'name':userId,
         'km_lkm':km_lkm,
-        'vaihtoehdot':YHTEINEN.vaihtoehdot(km_lkm)
+        'vaihtoehdot':YHTEINEN.vaihtoehdot(km_lkm, userId)
     }
     jsonvast = json.dumps(vastaus)
     return Response(response=jsonvast, mimetype="application/json")

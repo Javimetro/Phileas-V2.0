@@ -2,21 +2,22 @@ import mysql.connector
 from geopy.distance import geodesic
 from geopy import distance
 import random
+import config
 
-yhteys = mysql.connector.connect(
-         host='127.0.0.1',
-         port=3306,
-         database='flight_game',
-         user='root',
-         password='123',
-         autocommit=True
-         )
+# config.conn = mysql.connector.connect(
+#          host='127.0.0.1',
+#          port=3306,
+#          database='flight_game',
+#          user='root',
+#          password='rootformaria',
+#          autocommit=True
+#          )
 
 
 def updatelocation(icao, userId):
     sql = f'''UPDATE game SET location= %s WHERE id={userId}'''
     tuple = (icao,)
-    kursori = yhteys.cursor()
+    kursori = config.conn.cursor()
     kursori.execute(sql,tuple)
     if kursori.rowcount == 1:
         print("LOCATION UPDATED")
@@ -25,18 +26,18 @@ def updatelocation(icao, userId):
 def haelongitude(userId):
     sql = f'''select longitude_deg
     from airport, game
-    where id={userId} and location = ident'''
-    kursori = yhteys.cursor()
+    where game.id={userId} and location = ident'''
+    kursori = config.conn.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchone()
     return tulos
 
 
 def haelatitude(userId):
-    sql = '''select latitude_deg
+    sql = f'''select latitude_deg
     from airport, game
-    where id={userId} and location = ident'''
-    kursori = yhteys.cursor()
+    where game.id={userId} and location = ident'''
+    kursori = config.conn.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchone()
     return tulos
@@ -45,10 +46,10 @@ def haelatitude(userId):
 def valikoima(kilometrit, userId):
     lat1=haelatitude(userId)
     lon1=haelongitude(userId)
-    northlimit = lat1[0] + kilometrit * 0.01
-    southlimit = lat1[0] - kilometrit * 0.01
+    northlimit = float(lat1[0]) + float(kilometrit) * 0.01
+    southlimit = float(lat1[0]) - float(kilometrit) * 0.01
     westlimit = lon1[0]
-    eastlimit = lon1[0] + kilometrit * 0.01
+    eastlimit = float(lon1[0]) + float(kilometrit) * 0.01
     if southlimit < 0:
         southlimit = 0
     if northlimit > 80:
@@ -64,7 +65,7 @@ def valikoima(kilometrit, userId):
             FROM Airport WHERE latitude_deg BETWEEN {southlimit} AND {northlimit}
             AND longitude_deg BETWEEN {-180} AND {eastlimit} AND {westlimit} AND {180}'''
 
-    kursori = yhteys.cursor()
+    kursori = config.conn.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchall()
     return tulos
@@ -84,7 +85,7 @@ def etaisyysicaolla(icao):
     sql = '''SELECT latitude_deg, longitude_deg 
     FROM airport 
     WHERE ident = %s'''
-    kursori = yhteys.cursor()
+    kursori = config.conn.cursor()
     kursori.execute(sql, tuple)
     tulos = kursori.fetchone()
     return tulos
@@ -94,7 +95,7 @@ def phileaslocation(userId):
     sql = f'''select latitude_deg, longitude_deg
     from airport, game
     where id={userId} and location = ident'''
-    kursori = yhteys.cursor()
+    kursori = config.conn.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchone()
     return tulos
@@ -104,7 +105,7 @@ def londoncityairport():
     sql = '''select ident, name, latitude_deg, longitude_deg
         from airport
         where ident = "EGLC"'''
-    kursori = yhteys.cursor()
+    kursori = config.conn.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchone()
     return tulos
@@ -113,7 +114,7 @@ def londoncityairport():
 def city_country(userId):
     sql = f'''select airport.municipality, country.name from airport, country, game 
     where id={userId} and  game.location=airport.ident and airport.iso_country=country.iso_country;'''
-    kursori = yhteys.cursor()
+    kursori = config.conn.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchall()
     for i in tulos:
@@ -124,7 +125,7 @@ def onkoAlennusAlue(icao):
     tuple = (icao,)
     sql = '''SELECT latitude_deg FROM airport 
     WHERE ident = %s'''
-    kursori = yhteys.cursor()
+    kursori = config.conn.cursor()
     kursori.execute(sql, tuple)
     tulos = kursori.fetchone()
     if 20 < tulos[0] < 40:
@@ -153,7 +154,7 @@ def lisaraha(hinta):
 
 def aloitusbudjetti(userId):
     sql = f'''UPDATE game SET co2_budget=1000 WHERE id={userId}'''
-    kursori = yhteys.cursor()
+    kursori = config.conn.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchone()
     return tulos
@@ -161,7 +162,7 @@ def aloitusbudjetti(userId):
 
 def hae_budjetti(userId):
     sql = f'''SELECT co2_budget FROM game WHERE id={userId}'''
-    kursori = yhteys.cursor()
+    kursori = config.conn.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchone()
     return tulos[0]
@@ -169,7 +170,7 @@ def hae_budjetti(userId):
 
 def paivita_budjetti(hinta,raha, userId):
     sql = f'''UPDATE game SET co2_budget=co2_budget-{hinta}+{raha} WHERE id={userId}'''
-    kursori=yhteys.cursor()
+    kursori=config.conn.cursor()
     kursori.execute(sql)
     tulos=kursori.fetchone()
     return tulos
@@ -177,7 +178,7 @@ def paivita_budjetti(hinta,raha, userId):
 
 def tarkista_budjetti(userId):
     sql = f'''SELECT co2_budget FROM game WHERE id={userId}'''
-    kursori=yhteys.cursor()
+    kursori=config.conn.cursor()
     kursori.execute(sql)
     tulos=kursori.fetchone()
     return tulos[0]
