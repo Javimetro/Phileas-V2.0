@@ -29,17 +29,6 @@ config.conn = mysql.connector.connect(
          autocommit=True
          )
 
-# def fly(id, dest, consumption=0, player=None):
-#     if id==0:
-#         game = Game(0, dest, consumption, player)
-#     else:
-#         game = Game(id, dest, consumption)
-#     game.location[0].fetchWeather(game)
-#     nearby = game.location[0].find_nearby_airports()
-#     for a in nearby:
-#         game.location.append(a)
-#     json_data = json.dumps(game, default=lambda o: o.__dict__, indent=4)
-#     return json_data
 
 #http://127.0.0.1:5000/kilometria?id=1&km=1000
 @app.route('/kilometria')
@@ -57,26 +46,20 @@ def airportList():
     return Response(response=jsonvast, mimetype="application/json")
 
 
-
-
-# http://127.0.0.1:5000/flyto?game=fEC7n0loeL95awIxgY7M&dest=EFHK&consumption=123
-# @app.route('/km/<km_lkm>')
-# def flyto(km_lkm):
-#     km_lkm = float(km_lkm)
-#     vastaus = {
-#         'km_lkm': YHTEINEN.vaihtoehdot(km_lkm)
-#     }
-#     jsonvast = json.dumps(vastaus)
-#     return Response(response=jsonvast, mimetype="application/json")
-
-    # args = request.args
-    # id = args.get("game")
-    # dest = args.get("dest")
-    # consumption = args.get("consumption")
-    # json_data = fly(id, dest, consumption)
-    # print("*** Called flyto endpoint ***")
-    # return json_data
-
+@app.route('/flyto')
+def flyto():
+    args = request.args
+    player = args.get('id')
+    destination = args.get('dest')
+    YHTEINEN.updatelocation(destination, player)
+    location = YHTEINEN.phileaslocation(player)
+    jdata = {
+        'player': player,
+        'location': destination,
+        'lat': location[0],
+        'lon': location[1]
+    }
+    return json.dumps(jdata)
 
 # http://127.0.0.1:5000/newgame?name=Lena
 @app.route('/newgame')
@@ -92,8 +75,6 @@ def newgame():
     YHTEINEN.lopullinenbudjetti = 0
     YHTEINEN.updatelocation('EGLC', userId)
     YHTEINEN.aloitusbudjetti(userId)
-    # lat1 = YHTEINEN.haelatitude(userId)
-    # lon1 = YHTEINEN.haelongitude(userId)
 
     sql = f'''SELECT * from game where id = "{userId}"'''
     kursori.execute(sql)
@@ -107,7 +88,7 @@ def newgame():
         'consumed': vastaus[1]
     }
     kursori.close()
-    return jsonVast
+    return json.dumps(jsonVast)
 
 
 if __name__ == '__main__':
