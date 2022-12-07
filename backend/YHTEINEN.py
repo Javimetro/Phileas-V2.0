@@ -131,9 +131,18 @@ def onkoAlennusAlue(icao):
         return 1.3
 
 
-def hintakaava(km):
+def hintakaava(icao1, icao2):
+    km = round(geodesic(etaisyysicaolla(icao1), etaisyysicaolla(icao2)).km, 3)
     hinta = km/10 * onkoAlennusAlue(icao2)
     return hinta
+
+
+def getInfoById(userId):
+    sql = f'''select * from game where game.id={userId}'''
+    kursori = config.conn.cursor()
+    kursori.execute(sql)
+    tulos = kursori.fetchone()
+    return tulos
 
 
 def lisaraha(hinta):
@@ -158,7 +167,7 @@ def hae_budjetti(userId):
 
 
 def paivita_budjetti(hinta,raha, userId):
-    sql = f'''UPDATE game SET co2_budget=co2_budget-{hinta}+{raha} WHERE id={userId}'''
+    sql = f'''UPDATE game SET co2_budget=co2_budget-{hinta}+{raha}, co2_consumed={hinta} WHERE id={userId}'''
     kursori=config.conn.cursor()
     kursori.execute(sql)
     tulos=kursori.fetchone()

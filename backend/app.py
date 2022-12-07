@@ -51,13 +51,21 @@ def flyto():
     args = request.args
     player = args.get('id')
     destination = args.get('dest')
+
+    location = YHTEINEN.getInfoById(player)[3]
+    price = YHTEINEN.hintakaava(location, destination)
+    money = YHTEINEN.lisaraha(price)
+
     YHTEINEN.updatelocation(destination, player)
-    location = YHTEINEN.phileaslocation(player)
+    YHTEINEN.paivita_budjetti(price, money, player)
+
+    info = YHTEINEN.getInfoById(player)
     jdata = {
         'player': player,
+        'name': info[4],
         'location': destination,
-        'lat': location[0],
-        'lon': location[1]
+        'budget': info[2],
+        'consumed': info[1]
     }
     return json.dumps(jdata)
 
