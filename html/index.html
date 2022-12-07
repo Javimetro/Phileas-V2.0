@@ -20,6 +20,9 @@
 <div class="container">
     <header class="page-header">
         <h1 class="page-title">Maailman ympäri</h1>
+        <nav>
+            <button onclick="togglePopup()">Tarina & ohjeet</button>
+        </nav>
     </header>
 
     <main class="flex-wrap">
@@ -31,7 +34,9 @@
                 </header>
                 <table>
                     <tr>
-                        <td colspan="4">(Pelaajan nimi)</td>
+                        <td colspan="2">
+                            <p id="player-name">(Pelaajan nimi)</p>
+                        </td>
                     </tr>
                     <tr>
                         <td>Jäljellä oleva budjetti: <span id="budjetti">0</span>€</td>
@@ -55,9 +60,6 @@
                     <tr>
                         <td>Lennetyt kilometrit: <span id="kilometrit">0</span> km</td>
                     </tr>
-                    <tr>
-                        <td>Leveysastetiedot (?)</td>
-                    </tr>
                 </table>
             </section>
         </div>
@@ -69,6 +71,39 @@
         <input type="submit" value="OK">
     </form>
 </div>
-</body>
 
+<div class="popup" id="popup-1">
+    <div class="overlay"></div>
+    <div class="content">
+        <div class="close-btn" onclick="togglePopup()">&times;</div>
+        <h2>Tarina ja ohjeet</h2>
+        <p>Olet maailmankuulu maailmanmatkaaja Phileas Fogg ja sinut on haastettu matkustamaan maailman ympäri niin
+            nopeasti
+            kuin pysyt.</p>
+        <p>Lennät maailman ympäri valitsemalla haluamasi matkan pituuden, mutta muista että pidemmät matkat ovat
+            kalliimpia!</p>
+        <p>Aloitat kotoasi Lontoosta ja sinne haluat myös palata voittaaksesi. </p>
+        <p>Onnea matkaan, toivottavasti reisussa kestää tällä kertaa vähemmän kuin 80 päivää!</p>
+        <p>Budjettisi on alussa 1000€. Tämän lisäksi saat joka matkan jälkeen hieman lisärahaa.</p>
+        <br>
+        <br>
+        <p>Matkasi hinta riippuu leveysasteista, joiden välillä lennät.</p>
+        <p>*Leveysasteet 40-60: Matkakustannukset ovat suoraan verrannollisia matkan pituuteen, koska lähtö- ja
+            tulopaikka
+            sijaitsevat tällä alueella.</p>
+        <p>*Leveysasteet 20-40: Näillä alueilla matkasi hinta on 30 prosenttia halvempi, mutta matka voi kestää hieman
+            kauemmin. Maapallon ympärillä oleva matka alkaa pidentyä koska meridiaanien välinen etäisyys on suurempi
+            kuin
+            Lontoossa.</p>
+        <p>*Leveysasteet 0-20: Täällä liput ovat todella halpoja (70 % alennus!), mutta matka maapallon ympäri on
+            kaikista
+            pisin. Lennät lähellä päiväntasaajaa.
+        <p>
+        <p>*Leveysasteet 60-80: Tämä alue on lähellä pohjoisnapaa, ja täällä ei kestä kauan lentää maailman ympäri
+            (meridiaanien välinen etäisyys on hyvin pieni). Tästä syystä liput ovat 30 prosenttia kalliimpia.
+        <p>
+    </div>
+</div>
+
+</body>
 </html>
