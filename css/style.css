@@ -1,0 +1,101 @@
+:root {
+    --color: #85cdd3;
+    --text: #346073;
+}
+
+.flex-wrap {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/*poista*/.space-evenly {
+    justify-content: space-evenly;
+}
+
+.hide {
+    display: none;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Cabin', sans-serif;
+    color: var(--text);
+    background-image: url("../img/backgroundd.jpg");
+}
+
+.container {
+    width: 100%;
+    margin: auto;
+}
+
+.page-header {
+    background-color: var(--color);
+    padding: 1.5rem 0;
+    margin-bottom: 1rem;
+}
+
+.page-title {
+    margin: 0;
+    text-align: center;
+}
+
+main {
+    width: 90%;
+    margin: auto;
+    padding: 1rem 2rem;
+}
+
+#map {
+    width: 65%;
+}
+
+h2 {
+    padding-bottom: 1rem;
+}
+
+.boxes {
+    width: 20%;
+    padding: 3rem 0 0 5rem;
+}
+
+.box {
+    padding: 1rem;
+    font-size: medium;
+    margin-bottom: 6rem;
+}
+
+#map, .box {
+    border-radius: 10px;
+    box-shadow: var(--color) 6px 6px 2px;
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+.box h2 {
+    margin: 0;
+}
+
+.box table {
+    width: 100%;
+    text-align: center;
+    border-radius: 4px;
+}
+
+#player-modal {
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, .8);
+    position: absolute;
+    top: 0;
+}
+
+#player-form {
+    display: flex;
+    width: 50%;
+    margin: 4rem auto;
+    flex-direction: column;
+}
+
+#player-form input {
+    padding: 1rem;
+}
