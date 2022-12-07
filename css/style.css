@@ -99,3 +99,15 @@ h2 {
 #player-form input {
     padding: 1rem;
 }
+
+
+
+.location-icon {
+
+}
+
+.suggested-icon {
+    background-color: #00b1ff;
+    border-radius: 50%;
+    border: 5px solid rgba(255, 255, 255, 0.5);
+}
