@@ -8,13 +8,13 @@ yhteys = mysql.connector.connect(
          port=3306,
          database='flight_game',
          user='root',
-         password='rootformaria',
+         password='123',
          autocommit=True
          )
 
 
-def updatelocation(icao):
-    sql = '''UPDATE game SET location= %s WHERE screen_name = "Phileas Fogg"'''
+def updatelocation(icao, userId):
+    sql = f'''UPDATE game SET location= %s WHERE id={userId}'''
     tuple = (icao,)
     kursori = yhteys.cursor()
     kursori.execute(sql,tuple)
@@ -22,29 +22,29 @@ def updatelocation(icao):
         print("LOCATION UPDATED")
 
 
-def haelongitude():
-    sql = '''select longitude_deg
+def haelongitude(userId):
+    sql = f'''select longitude_deg
     from airport, game
-    where screen_name = "Phileas Fogg" and location = ident'''
+    where id={userId} and location = ident'''
     kursori = yhteys.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchone()
     return tulos
 
 
-def haelatitude():
+def haelatitude(userId):
     sql = '''select latitude_deg
     from airport, game
-    where screen_name = "Phileas Fogg" and location = ident'''
+    where id={userId} and location = ident'''
     kursori = yhteys.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchone()
     return tulos
 
 
-def valikoima(kilometrit):
-    lat1=haelatitude()
-    lon1=haelongitude()
+def valikoima(kilometrit, userId):
+    lat1=haelatitude(userId)
+    lon1=haelongitude(userId)
     northlimit = lat1[0] + kilometrit * 0.01
     southlimit = lat1[0] - kilometrit * 0.01
     westlimit = lon1[0]
@@ -70,10 +70,10 @@ def valikoima(kilometrit):
     return tulos
 
 
-def vaihtoehdot(km):
+def vaihtoehdot(km, userId):
     vaihtoehdot1 = []
 
-    tulos = valikoima(km)
+    tulos = valikoima(km, userId)
     for i in range(10):
         vaihtoehdot1.append(random.choice(tulos))
     return vaihtoehdot1
@@ -90,10 +90,10 @@ def etaisyysicaolla(icao):
     return tulos
 
 
-def phileaslocation():
-    sql = '''select latitude_deg, longitude_deg
+def phileaslocation(userId):
+    sql = f'''select latitude_deg, longitude_deg
     from airport, game
-    where screen_name = "Phileas Fogg" and location = ident'''
+    where id={userId} and location = ident'''
     kursori = yhteys.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchone()
@@ -110,9 +110,9 @@ def londoncityairport():
     return tulos
 
 
-def city_country():
-    sql = '''select airport.municipality, country.name from airport, country, game 
-    where screen_name='Phileas Fogg' and  game.location=airport.ident and airport.iso_country=country.iso_country;'''
+def city_country(userId):
+    sql = f'''select airport.municipality, country.name from airport, country, game 
+    where id={userId} and  game.location=airport.ident and airport.iso_country=country.iso_country;'''
     kursori = yhteys.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchall()
@@ -151,32 +151,32 @@ def lisaraha(hinta):
     return raha
 
 
-def aloitusbudjetti():
-    sql = f'''UPDATE game SET co2_budget=1000 WHERE id="1"'''
+def aloitusbudjetti(userId):
+    sql = f'''UPDATE game SET co2_budget=1000 WHERE id={userId}'''
     kursori = yhteys.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchone()
     return tulos
 
 
-def hae_budjetti():
-    sql = f'''SELECT co2_budget FROM game WHERE id="1"'''
+def hae_budjetti(userId):
+    sql = f'''SELECT co2_budget FROM game WHERE id={userId}'''
     kursori = yhteys.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchone()
     return tulos[0]
 
 
-def paivita_budjetti(hinta,raha):
-    sql = f'''UPDATE game SET co2_budget=co2_budget-{hinta}+{raha} WHERE id="1"'''
+def paivita_budjetti(hinta,raha, userId):
+    sql = f'''UPDATE game SET co2_budget=co2_budget-{hinta}+{raha} WHERE id={userId}'''
     kursori=yhteys.cursor()
     kursori.execute(sql)
     tulos=kursori.fetchone()
     return tulos
 
 
-def tarkista_budjetti():
-    sql = f'''SELECT co2_budget FROM game WHERE id="1"'''
+def tarkista_budjetti(userId):
+    sql = f'''SELECT co2_budget FROM game WHERE id={userId}'''
     kursori=yhteys.cursor()
     kursori.execute(sql)
     tulos=kursori.fetchone()

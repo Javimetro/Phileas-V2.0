@@ -44,7 +44,7 @@ config.conn = mysql.connector.connect(
 @app.route('/kilometria/<km_lkm>')
 def airportList(km_lkm):
     km_lkm = int(km_lkm)
-    YHTEINEN.valikoima(km_lkm)
+    # YHTEINEN.valikoima(km_lkm)
     vastaus = {
         'km_lkm':km_lkm,
         'vaihtoehdot':YHTEINEN.vaihtoehdot(km_lkm)
@@ -56,16 +56,14 @@ def airportList(km_lkm):
 
 
 # http://127.0.0.1:5000/flyto?game=fEC7n0loeL95awIxgY7M&dest=EFHK&consumption=123
-@app.route('/km/<km_lkm>')
-def flyto(km_lkm):
-    km_lkm = float(km_lkm)
-
-
-    vastaus = {
-        'km_lkm': YHTEINEN.vaihtoehdot(km_lkm)
-    }
-    jsonvast = json.dumps(vastaus)
-    return Response(response=jsonvast, mimetype="application/json")
+# @app.route('/km/<km_lkm>')
+# def flyto(km_lkm):
+#     km_lkm = float(km_lkm)
+#     vastaus = {
+#         'km_lkm': YHTEINEN.vaihtoehdot(km_lkm)
+#     }
+#     jsonvast = json.dumps(vastaus)
+#     return Response(response=jsonvast, mimetype="application/json")
 
     # args = request.args
     # id = args.get("game")
@@ -76,13 +74,11 @@ def flyto(km_lkm):
     # return json_data
 
 
-# http://127.0.0.1:5000/newgame?player=Vesa&loc=EFHK
+# http://127.0.0.1:5000/newgame?name=Lena
 @app.route('/newgame')
 def newgame():
-
     args = request.args
     user = args.get('name')
-
     sql = f'''INSERT INTO game SET screen_name = "{user}"'''
     kursori = config.conn.cursor()
     kursori.execute(sql)
@@ -90,10 +86,10 @@ def newgame():
 
     YHTEINEN.vuorot = 0
     YHTEINEN.lopullinenbudjetti = 0
-    YHTEINEN.updatelocation('EGLC')
-    YHTEINEN.aloitusbudjetti()
-    lat1 = YHTEINEN.haelatitude()
-    lon1 = YHTEINEN.haelongitude()
+    YHTEINEN.updatelocation('EGLC', userId)
+    YHTEINEN.aloitusbudjetti(userId)
+    # lat1 = YHTEINEN.haelatitude(userId)
+    # lon1 = YHTEINEN.haelongitude(userId)
 
     sql = f'''SELECT * from game where id = "{userId}"'''
     kursori.execute(sql)
