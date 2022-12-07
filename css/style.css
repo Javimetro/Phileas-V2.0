@@ -8,7 +8,7 @@
     flex-wrap: wrap;
 }
 
-/*poista*/.space-evenly {
+.space-evenly {
     justify-content: space-evenly;
 }
 
@@ -33,11 +33,31 @@ html, body {
     background-color: var(--color);
     padding: 1.5rem 0;
     margin-bottom: 1rem;
+    display: flex;
 }
 
 .page-title {
-    margin: 0;
+    margin: auto;
     text-align: center;
+    padding-left: 10rem;
+}
+
+nav {
+    padding-right: 2rem;
+}
+
+button {
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: all 300ms;
+    background-color: #ee5c5c;
+    color: #fffafa;
+    border: 0.2rem solid #c74646;
+}
+
+button:hover {
+    transform: scale(1.1);
 }
 
 main {
@@ -101,7 +121,55 @@ h2 {
 }
 
 .suggested-icon {
-    background-color: #346073;
+    background-color: #ee5c5c;
     border-radius: 50%;
-    border: 3px solid rgb(132, 204, 210);
+    border: 3px solid #c74646;
+}
+
+
+
+.popup .overlay {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(13, 20, 23, 0.5);
+    z-index: 1;
+    display: none;
+}
+
+.popup .content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 900px;
+    transform: translate(-50%, -50%) scale(0);
+    background: #fffafa;
+    z-index: 2;
+    text-align: center;
+    padding: 1rem 3rem;
+    box-sizing: border-box;
+    border-radius: 10px;
+}
+
+.popup .close-btn {
+    cursor: pointer;
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--text);
+    color: #fffafa;
+    font-size: 30px;
+    border-radius: 10px;
+}
+
+.popup.active .overlay {
+    display: block;
+}
+
+.popup.active .content {
+    transition: all 300ms ease-in-out;
+    transform: translate(-50%, -50%) scale(1);
 }
