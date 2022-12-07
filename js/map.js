@@ -15,6 +15,6 @@ marker.openPopup();
 
 //ehdotetut lentokentät
 const flyhere = L.marker([53, -3]).addTo(map);
-flyhere.bindPopup(`AAA`);
+flyhere.bindPopup(`ehdotus`);
 const suggested = L.divIcon({ className: 'suggested-icon' });
 flyhere.setIcon(suggested);

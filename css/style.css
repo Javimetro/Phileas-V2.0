@@ -100,10 +100,8 @@ h2 {
     padding: 1rem;
 }
 
-
-
 .suggested-icon {
-    background-color: #00b1ff;
+    background-color: #346073;
     border-radius: 50%;
-    border: 5px solid rgba(255, 255, 255, 0.5);
+    border: 3px solid rgb(132, 204, 210);
 }
