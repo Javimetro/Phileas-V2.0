@@ -5,9 +5,11 @@ import mysql.connector
 from dotenv import load_dotenv
 from flask import Flask, Response  #request
 from flask_cors import CORS
+from YHTEINEN import valikoima,vaihtoehdot
+
 
 import config
-from game import Game
+#from game import Game
 
 load_dotenv()
 
@@ -26,6 +28,19 @@ config.conn = mysql.connector.connect(
          autocommit=True
          )
 
+@app.route('/kilometria/<km_lkm>')
+def airportList (km_lkm):
+
+    km_lkm = int(km_lkm)
+    valikoima(km_lkm)
+    vastaus = {
+        'km_lkm' : km_lkm,
+        'vaihtoehdot' : vaihtoehdot(km_lkm)
+    }
+    jsonVastaus = json.dumps(vastaus)
+    return Response (response=jsonVastaus, mimetype="application/json")
+
+
 # def fly(id, dest, consumption=0, player=None):
 #     if id==0:
 #         game = Game(0, dest, consumption, player)
@@ -40,14 +55,14 @@ config.conn = mysql.connector.connect(
 
 
 # http://127.0.0.1:5000/flyto?game=fEC7n0loeL95awIxgY7M&dest=EFHK&consumption=123
-@app.route('/km/<km_lkm>')
-def flyto(km_lkm):
-    km_lkm = float(km_lkm)
-    vastaus = {
-        'km_lkm' : km_lkm
-    }
-    jsonvast = json.dumps(vastaus)
-    return Response(response=jsonvast, mimetype="application/json")
+# @app.route('/km/<km_lkm>')
+# def flyto(km_lkm):
+#     km_lkm = float(km_lkm)
+#     vastaus = {
+#         'km_lkm' : km_lkm
+#     }
+#     jsonvast = json.dumps(vastaus)
+#     return Response(response=jsonvast, mimetype="application/json")
 
     # args = request.args
     # id = args.get("game")
