@@ -4,23 +4,12 @@ from geopy import distance
 import random
 import config
 
-# config.conn = mysql.connector.connect(
-#          host='127.0.0.1',
-#          port=3306,
-#          database='flight_game',
-#          user='root',
-#          password='rootformaria',
-#          autocommit=True
-#          )
-
 
 def updatelocation(icao, userId):
     sql = f'''UPDATE game SET location= %s WHERE id={userId}'''
     tuple = (icao,)
     kursori = config.conn.cursor()
     kursori.execute(sql,tuple)
-    if kursori.rowcount == 1:
-        print("LOCATION UPDATED")
 
 
 def haelongitude(userId):
