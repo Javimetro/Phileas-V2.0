@@ -32,7 +32,7 @@ html, body {
 .page-header {
     background-color: var(--color);
     padding: 1.5rem 0;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 .page-title {
@@ -98,11 +98,4 @@ h2 {
 
 #player-form input {
     padding: 1rem;
-}
-
-@media screen and (min-width: 769px) {
-    .boxes {
-        width: 30%;
-        box-sizing: border-box;
-    }
 }
