@@ -94,7 +94,7 @@ def etaisyysicaolla(icao):
 def phileaslocation(userId):
     sql = f'''select latitude_deg, longitude_deg
     from airport, game
-    where id={userId} and location = ident'''
+    where game.id={userId} and location = ident'''
     kursori = config.conn.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchone()
@@ -113,7 +113,7 @@ def londoncityairport():
 
 def city_country(userId):
     sql = f'''select airport.municipality, country.name from airport, country, game 
-    where id={userId} and  game.location=airport.ident and airport.iso_country=country.iso_country;'''
+    where game.id={userId} and  game.location=airport.ident and airport.iso_country=country.iso_country;'''
     kursori = config.conn.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchall()
