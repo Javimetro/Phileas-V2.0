@@ -1,5 +1,5 @@
 'use strict'
-const url = '#http://127.0.0.1:5000/kilometria?id=1&km=';
+const url = 'http://127.0.0.1:5000/kilometria?id=1&km=';
 
 async function sade (evt) {
   const maara = document.querySelector('#tasta').value;
@@ -16,8 +16,8 @@ async function sade (evt) {
   console.log(json)
   const sade = json.kl_lkm;
   console.log(sade);
-  const elementti = document.querySelector('#tahan');
-  elementti.innerText = sade;
+  //const elementti = document.querySelector('#tahan');
+  //elementti.innerText = sade;
 }
 
 

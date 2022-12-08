@@ -30,7 +30,7 @@ marker.bindPopup(`Tämänhetkinen sijaintisi (lentokentän nimi)`);
 marker.openPopup();
 
 //ehdotetut lentokentät
-const flyhere = L.marker([53, -3]).addTo(map);
+const flyhere = L.marker([52.461101532, 9.685079574580001]).addTo(map);
 const suggested = L.divIcon({className: 'suggested-icon'});
 flyhere.setIcon(suggested);
 
