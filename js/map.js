@@ -1,5 +1,6 @@
 'use strict';
 
+//kartta
 const map = L.map('map', {tap: false});
 L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
   maxZoom: 20,
@@ -8,13 +9,19 @@ L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
 map.setView([60, 24], 7);
 
 
+//pelaajan nimi
+document.querySelector('#player-form').addEventListener('submit', function(evt){
+  evt.preventDefault();
+  const nimi = document.querySelector('#player-input').value;
+  document.querySelector('#player-modal').classList.add('hide');
+  //gameSetup();
+})
+
 //Nappi (tarina&ohjeet)
 function togglePopup() {
   document.getElementById("popup-1").classList.toggle("active");
   //document.getElementById("map").classList.add('hide');
 }
-
-
 
 
 //pelaajan sijainti
@@ -36,6 +43,11 @@ const nappi = document.createElement('button');
 nappi.innerText = 'Lennä';
 popupContent.append(nappi);
 flyhere.bindPopup(popupContent);
+
+//lentäminen lentokentältä toiselle
+nappi.addEventListener('click', function() {
+})
+
 
 
 
