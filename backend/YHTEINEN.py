@@ -54,7 +54,7 @@ def valikoima(kilometrit, userId):
             FROM Airport WHERE airport.type = 'large_airport' AND latitude_deg BETWEEN {southlimit} AND {northlimit}
             AND longitude_deg BETWEEN {-180} AND {eastlimit} AND {westlimit} AND {180}'''
 
-    kursori = config.conn.cursor()
+    kursori = config.conn.cursor(dictionary=True)
     kursori.execute(sql)
     tulos = kursori.fetchall()
     return tulos
@@ -129,7 +129,9 @@ def onkoAlennusAlue(icao):
     elif 60 < tulos[0] < 80:
         print('Olet korkeammalla alueella. Joudut maksamaan 30% enemmän.')
         return 1.3
-
+def etaisyys(icao1,icao2):
+    km = round(geodesic(etaisyysicaolla(icao1), etaisyysicaolla(icao2)).km, 3)
+    return km
 
 def hintakaava(icao1, icao2):
     km = round(geodesic(etaisyysicaolla(icao1), etaisyysicaolla(icao2)).km, 3)

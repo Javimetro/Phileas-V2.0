@@ -34,13 +34,23 @@ config.conn = mysql.connector.connect(
 @app.route('/kilometria')
 def airportList():
     args = request.args
-    userId = args.get('id')
+    player = args.get('id')
     km_lkm = args.get('km')
-    YHTEINEN.valikoima(km_lkm,userId)
+    location = YHTEINEN.getInfoById(player)[3]
+    YHTEINEN.valikoima(km_lkm,player)
+    vaihtoehdotList = YHTEINEN.vaihtoehdot(km_lkm,player)
+
+    for vaihtoehto in vaihtoehdotList:
+        icao2 = vaihtoehto['ident']
+        hinta = YHTEINEN.hintakaava(location,icao2)
+        etaisyys = YHTEINEN.etaisyys(location,icao2)
+        vaihtoehto['price']=round(hinta,1)
+        vaihtoehto['distance']=int(etaisyys)
+
     vastaus = {
-        'name':userId,
-        'km_lkm':km_lkm,
-        'vaihtoehdot':YHTEINEN.vaihtoehdot(km_lkm, userId)
+        'name': player,
+        'km_lkm': km_lkm,
+        'vaihtoehdot': vaihtoehdotList
     }
     jsonvast = json.dumps(vastaus)
     return Response(response=jsonvast, mimetype="application/json")
