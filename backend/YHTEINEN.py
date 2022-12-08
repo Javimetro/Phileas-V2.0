@@ -141,7 +141,7 @@ def getInfoById(userId):
     sql = f'''select * from game where game.id={userId}'''
     kursori = config.conn.cursor()
     kursori.execute(sql)
-    tulos = kursori.fetchone()
+    tulos = kursori.fetchall()
     return tulos
 
 
