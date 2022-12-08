@@ -143,7 +143,7 @@ def getInfoById(userId):
     sql = f'''select * from game where game.id={userId}'''
     kursori = config.conn.cursor()
     kursori.execute(sql)
-    tulos = kursori.fetchall()
+    tulos = kursori.fetchone()
     return tulos
 
 
@@ -153,7 +153,7 @@ def lisaraha(hinta):
 
 
 def aloitusbudjetti(userId):
-    sql = f'''UPDATE game SET co2_budget=1000 WHERE id={userId}'''
+    sql = f'''UPDATE game SET co2_budget=1000, co2_consumed=0 WHERE id={userId}'''
     kursori = config.conn.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchone()
@@ -169,7 +169,7 @@ def hae_budjetti(userId):
 
 
 def paivita_budjetti(hinta,raha, userId):
-    sql = f'''UPDATE game SET co2_budget=co2_budget-{hinta}+{raha}, co2_consumed={hinta} WHERE id={userId}'''
+    sql = f'''UPDATE game SET co2_budget=co2_budget-{hinta}+{raha}, co2_consumed=co2_consumed+{hinta} WHERE id={userId}'''
     kursori=config.conn.cursor()
     kursori.execute(sql)
     tulos=kursori.fetchone()
