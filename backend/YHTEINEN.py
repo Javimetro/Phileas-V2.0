@@ -45,13 +45,13 @@ def valikoima(kilometrit, userId):
         northlimit = 80
     if -180 < eastlimit < 180:
         sql = f'''SELECT ident, name, latitude_deg, longitude_deg
-            FROM Airport WHERE latitude_deg BETWEEN {southlimit} AND {northlimit}
+            FROM Airport WHERE airport.type = 'large_airport' AND latitude_deg BETWEEN {southlimit} AND {northlimit}
             AND longitude_deg BETWEEN {westlimit} AND {eastlimit}'''
     elif eastlimit > 180:
         eastlimit = eastlimit - 360
 
         sql = f'''SELECT ident, name, latitude_deg, longitude_deg
-            FROM Airport WHERE latitude_deg BETWEEN {southlimit} AND {northlimit}
+            FROM Airport WHERE airport.type = 'large_airport' AND latitude_deg BETWEEN {southlimit} AND {northlimit}
             AND longitude_deg BETWEEN {-180} AND {eastlimit} AND {westlimit} AND {180}'''
 
     kursori = config.conn.cursor()
