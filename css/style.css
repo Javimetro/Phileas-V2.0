@@ -47,6 +47,7 @@ nav {
 }
 
 button {
+    cursor: pointer;
     padding: 0.5rem 1rem;
     text-decoration: none;
     border-radius: 10px;
