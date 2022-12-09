@@ -70,33 +70,48 @@ const url = 'http://127.0.0.1:5000/kilometria?id=1&km=';
 
 async function sade(evt) {
   evt.preventDefault();
+  document.querySelector('#kilometritSade').classList.add('hide');
 
   const maara = document.querySelector('#tasta').value;
-  //console.log(maara);
   let sadeUrl = url + maara;
-  //console.log(sadeUrl);
 
   const response = await fetch(sadeUrl);
   const json = await response.json();
-  //console.log(json);
+  console.log(json);
   const sade = json.km_lkm;
-  const vaihtoehdo = json.vaihtoehdot;
-  //console.log(vaihtoehdo);
   for (let i = 0; i <= 9; i++) {
     const kord1 = json.vaihtoehdot[i]['latitude_deg'];
     const kord2 = json.vaihtoehdot[i]['longitude_deg'];
-    //console.log(kord1);
-    //console.log(kord2);
 
-    //ehdotetut lentokentät
+    //markerit ehdotetuille lentokentille
     const flyhere = L.marker([kord1, kord2]).addTo(map);
     const suggested = L.divIcon({className: 'suggested-icon'});
     flyhere.setIcon(suggested);
-
+    //markereiden sisällä näkyvä teksti
     const popupContent = document.createElement('div');
     const h4 = document.createElement('h4');
-    h4.innerText = '(lentokentän nimi)';
+    h4.innerText = json.vaihtoehdot[i]['name'];
     popupContent.append(h4);
+    const p = document.createElement('p');
+    p.innerHTML = `Etäisyys: ${json.vaihtoehdot[i]['distance']} km`;
+    popupContent.append(p);
+
+    const hinta = document.createElement('p');
+    hinta.innerHTML = `Hinta: ${json.vaihtoehdot[i]['price']} €`;
+    popupContent.append(hinta);
+    const ale = document.createElement('p');
+    const lati = json.vaihtoehdot[i]['latitude_deg'];
+    if (20 <= lati && lati <= 40) {
+      ale.innerText = '50% ALE';
+    } else if (0 <= lati && lati <= 20) {
+      ale.innerText = '70% ALE';
+    } else if (60 <= lati && lati <= 80) {
+      ale.innerText = '30% kalliimpi hinta';
+    } else {
+      ale.innerText = 'Normaali hinta';
+    }
+    popupContent.append(ale);
+
     const nappi = document.createElement('button');
     //nappi.classList.add('button');
     nappi.innerText = 'Lennä';
@@ -104,8 +119,6 @@ async function sade(evt) {
     flyhere.bindPopup(popupContent);
   }
 
-  const elementti = document.querySelector('#tahan');
-  elementti.innerText = sade;
 }
 
 const nappi2 = document.querySelector('#paina');
