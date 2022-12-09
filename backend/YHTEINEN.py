@@ -45,13 +45,13 @@ def valikoima(kilometrit, userId):
         northlimit = 80
     if -180 < eastlimit < 180:
         sql = f'''SELECT ident, name, latitude_deg, longitude_deg
-            FROM Airport WHERE airport.type = 'large_airport' AND latitude_deg BETWEEN {southlimit} AND {northlimit}
+            FROM Airport WHERE type='large_airport' OR type='medium_airport' AND latitude_deg BETWEEN {southlimit} AND {northlimit}
             AND longitude_deg BETWEEN {westlimit} AND {eastlimit}'''
     elif eastlimit > 180:
         eastlimit = eastlimit - 360
 
         sql = f'''SELECT ident, name, latitude_deg, longitude_deg
-            FROM Airport WHERE airport.type = 'large_airport' AND latitude_deg BETWEEN {southlimit} AND {northlimit}
+            FROM Airport WHERE type='large_airport' OR type='medium_airport' AND latitude_deg BETWEEN {southlimit} AND {northlimit}
             AND longitude_deg BETWEEN {-180} AND {eastlimit} AND {westlimit} AND {180}'''
 
     kursori = config.conn.cursor(dictionary=True)
@@ -118,16 +118,16 @@ def onkoAlennusAlue(icao):
     kursori.execute(sql, tuple)
     tulos = kursori.fetchone()
     if 20 < tulos[0] < 40:
-        print('Olet alennusalueella. Saat 50% alennusta.')
+        #print('Olet alennusalueella. Saat 50% alennusta.')
         return 0.5
     elif 40 <= tulos[0] <= 60:
-        print('Matkasi hinta on suoraan verrannollinen kuljettuun matkaan.')
+        #print('Matkasi hinta on suoraan verrannollinen kuljettuun matkaan.')
         return 1
     elif 0 < tulos[0] < 20:
-        print('Olet alennusalueella. Saat 70% alennusta.')
+        #print('Olet alennusalueella. Saat 70% alennusta.')
         return 0.3
     elif 60 < tulos[0] < 80:
-        print('Olet korkeammalla alueella. Joudut maksamaan 30% enemmän.')
+        #print('Olet korkeammalla alueella. Joudut maksamaan 30% enemmän.')
         return 1.3
 def etaisyys(icao1,icao2):
     km = round(geodesic(etaisyysicaolla(icao1), etaisyysicaolla(icao2)).km, 3)
