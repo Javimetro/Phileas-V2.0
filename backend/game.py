@@ -1,5 +1,6 @@
 import json
 import string, random
+import config
 
 import YHTEINEN
 from airport import Airport
@@ -13,15 +14,15 @@ class Game:
     #     self.location = []
     #     self.goals = []
 
-    def __init__(self, id, player):
+    def __init__(self, id, name=None):
         self.status = {}
-        self.player = player
+        self.id = id
 
         if id == 0:
             # new game
             # Create new game id
 
-            self.status = self.set_newgame()
+            self.status = self.set_newgame(name)
 
             # self.location.append(Airport(loc, True))
             #self.player = player
@@ -41,7 +42,7 @@ class Game:
             # cur2.execute(sql2)
 
             # find game from DB
-            findgame = YHTEINEN.getInfoById(self.player)
+            findgame = YHTEINEN.getInfoById(name)
             if len(findgame) == 1:
                 # game found
                 self.status = {
@@ -63,8 +64,8 @@ class Game:
         # self.fetch_goal_info()
 
 
-    def set_newgame(self):
-        sql = f'''INSERT INTO game SET screen_name = "{self.player}"'''
+    def set_newgame(self, name):
+        sql = f'''INSERT INTO game SET screen_name = {name}'''
         kursori = config.conn.cursor()
         kursori.execute(sql)
         userId = kursori.lastrowid
@@ -85,6 +86,24 @@ class Game:
         kursori.close()
         return json.dumps(jsonVast)
 
+    def updatelocation(self, icao):
+        sql = f'''UPDATE game SET location= %s WHERE id={self.id}'''
+        tuple = (icao,)
+        kursori = config.conn.cursor()
+        kursori.execute(sql, tuple)
+
+    def currentStatus(self):
+        sql = f'''select * from game where game.id={self.id}'''
+        kursori = config.conn.cursor()
+        kursori.execute(sql)
+        info = kursori.fetchone()
+        jdata = {
+            'id': self.id,
+            'name': info[4],
+            'location': info[3],
+            'budget': info[2],
+            'consumed': info[1]
+        }
 
     # def set_location(self, sijainti):
     #     #self.location = sijainti
