@@ -62,38 +62,23 @@ def airportList():
     jsonvast = json.dumps(vastaus)
     return Response(response=jsonvast, mimetype="application/json")
 
-# http://127.0.0.1:5000/flyto?id=1&dest=LFPG
+# http://127.0.0.1:5000/flyto?id=1&dest=LFPG&price=1000
 @app.route('/flyto')
 def flyto():
     args = request.args
-    player = args.get('id')
+    userid = args.get('id')
     destination = args.get('dest')
+    price = int(args.get('price'))
 
-    # currentGame = Game(id)
-    #
-    #
-    # currentGame.fly(destination)
-    #
-    # currentStatus = currentGame.currentStatus()
-    #
-    # if(currentGame.gameOver()) return 'gameover'
+    currentGame = Game(userid)
+    balance = currentGame.tarkista_budjetti()
+    if price > balance:
+        return 'gameover'
+    else:
+        currentGame.fly(destination, price)
+        status = currentGame.currentStatus()
+        return json.dumps(status)
 
-    location = YHTEINEN.getInfoById(player)[3]
-    price = YHTEINEN.hintakaava(location, destination)
-    money = YHTEINEN.lisaraha(price)
-
-    YHTEINEN.updatelocation(destination, player)
-    YHTEINEN.paivita_budjetti(price, money, player)
-
-    info = YHTEINEN.getInfoById(player)
-    jdata = {
-        'id': player,
-        'name': info[4],
-        'location': destination,
-        'budget': info[2],
-        'consumed': info[1]
-    }
-    return json.dumps(jdata)
 
 # http://127.0.0.1:5000/newgame?name=Lena
 @app.route('/newgame')
@@ -101,30 +86,10 @@ def newgame():
     args = request.args
     user = args.get('name')
 
-    # gameInfo = Game(0, user).currentStatus()
-    #
-    # return json.dumps(gameInfo)
+    game = Game(0, user)
+    status = game.currentStatus()
 
-    sql = f'''INSERT INTO game SET screen_name = "{user}"'''
-    kursori = config.conn.cursor()
-    kursori.execute(sql)
-    userId = kursori.lastrowid
-
-    YHTEINEN.vuorot = 0
-    YHTEINEN.lopullinenbudjetti = 0
-    YHTEINEN.updatelocation('EGLC', userId)
-    YHTEINEN.aloitusbudjetti(userId)
-
-    vastaus = YHTEINEN.getInfoById(userId)
-    jsonVast = {
-        'id': vastaus[0],
-        'name': vastaus[4],
-        'location': vastaus[3],
-        'budget': vastaus[2],
-        'consumed': vastaus[1]
-    }
-    kursori.close()
-    return json.dumps(jsonVast)
+    return json.dumps(status)
 
 
 if __name__ == '__main__':

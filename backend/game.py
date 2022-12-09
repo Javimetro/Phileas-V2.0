@@ -1,90 +1,32 @@
-import json
-import string, random
-import config
 
-import YHTEINEN
-from airport import Airport
-from goal import Goal
+from geopy.distance import geodesic
 import config
 
 class Game:
 
-    # def __init__(self, id, loc, consumption, player=None):
-    #     self.status = {}
-    #     self.location = []
-    #     self.goals = []
-
-    def __init__(self, id, name=None):
+    def __init__(self, userid, name=None):
         self.status = {}
-        self.id = id
 
-        if id == 0:
+        self.gameover = False
+
+        if userid == 0:
             # new game
             # Create new game id
-
-            self.status = self.set_newgame(name)
-
-            # self.location.append(Airport(loc, True))
-            #self.player = player
-            # Insert new game into DB
-            # sql = "INSERT INTO Game VALUES ('" + self.status["id"] + "', " + str(self.status["co2"]["consumed"])
-            # sql += ", " + str(self.status["co2"]["budget"]) + ", '" + loc + "', '" + self.status["name"] + "')"
-            # print(sql)
-            # cur = config.conn.cursor()
-            # cur.execute(sql)
-            #config.conn.commit()
-
+            self.set_newgame(name)
         else:
-            #update consumption and budget
-            # sql2 = "UPDATE Game SET co2_consumed = co2_consumed + " + consumption + ", co2_budget = co2_budget - " + consumption + " WHERE id='" + id + "'"
-            # print(sql2)
-            # cur2 = config.conn.cursor()
-            # cur2.execute(sql2)
-
-            # find game from DB
-            findgame = YHTEINEN.getInfoById(name)
-            if len(findgame) == 1:
-                # game found
-                self.status = {
-                    "id": findgame[0],
-                    "name": findgame[4],
-                    'location': findgame[3],
-                    "consumed": findgame[1],
-                    "budget": findgame[2]
-                }
-                # old location in DB currently not used
-                # apt = Airport(loc, True)
-                # self.location.append(apt)
-                # self.set_location(apt)
-
-            else:
-                print("************** PELIÄ EI LÖYDY! ***************")
-
-        # read game's goals
-        # self.fetch_goal_info()
-
+            self.id = userid
 
     def set_newgame(self, name):
-        sql = f'''INSERT INTO game SET screen_name = {name}'''
+        sql = f'''INSERT INTO game SET screen_name = "{name}"'''
         kursori = config.conn.cursor()
         kursori.execute(sql)
-        userId = kursori.lastrowid
+        self.id = kursori.lastrowid
 
-        YHTEINEN.vuorot = 0
-        YHTEINEN.lopullinenbudjetti = 0
-        YHTEINEN.updatelocation('EGLC', userId)
-        YHTEINEN.aloitusbudjetti(userId)
-
-        vastaus = YHTEINEN.getInfoById(userId)
-        jsonVast = {
-            'id': vastaus[0],
-            'name': vastaus[4],
-            'location': vastaus[3],
-            'budget': vastaus[2],
-            'consumed': vastaus[1]
-        }
+        # vuorot = 0
+        self.updatelocation('EGLC')
+        self.set_budget()
         kursori.close()
-        return json.dumps(jsonVast)
+        return
 
     def updatelocation(self, icao):
         sql = f'''UPDATE game SET location= %s WHERE id={self.id}'''
@@ -104,38 +46,72 @@ class Game:
             'budget': info[2],
             'consumed': info[1]
         }
+        kursori.close()
+        return jdata
 
-    # def set_location(self, sijainti):
-    #     #self.location = sijainti
-    #     sql = "UPDATE Game SET location='" + sijainti.ident + "' WHERE id='" + self.status["id"] + "'"
-    #     print(sql)
-    #     cur = config.conn.cursor()
-    #     cur.execute(sql)
-        #config.conn.commit()
-        #self.loc = sijainti.ident
+    def set_budget(self):
+        sql = f'''UPDATE game SET co2_budget=1000, co2_consumed=0 WHERE id={self.id}'''
+        kursori = config.conn.cursor()
+        kursori.execute(sql)
+        tulos = kursori.fetchone()
+        return tulos
 
+    def update_budget(self, hinta, raha):
+        sql = f'''UPDATE game SET co2_budget=co2_budget-{hinta}+{raha}, co2_consumed=co2_consumed+{hinta} WHERE id={self.id}'''
+        kursori = config.conn.cursor()
+        kursori.execute(sql)
+        tulos = kursori.fetchone()
+        return tulos
 
-    # def fetch_goal_info(self):
-    #
-    #     sql = "SELECT * FROM (SELECT Goal.id, Goal.name, Goal.description, Goal.icon, goal_reached.game_id, "
-    #     sql += "Goal.target, Goal.target_minvalue, Goal.target_maxvalue, Goal.target_text "
-    #     sql += "FROM Goal INNER JOIN goal_reached ON Goal.id = goal_reached.goal_id "
-    #     sql += "WHERE goal_reached.game_id = '" + self.status["id"] + "' "
-    #     sql += "UNION SELECT Goal.id, Goal.name, Goal.description, Goal.icon, NULL, "
-    #     sql += "Goal.target, Goal.target_minvalue, Goal.target_maxvalue, Goal.target_text "
-    #     sql += "FROM Goal WHERE Goal.id NOT IN ("
-    #     sql += "SELECT Goal.id FROM Goal INNER JOIN goal_reached ON Goal.id = goal_reached.goal_id "
-    #     sql += "WHERE goal_reached.game_id = '" + self.status["id"] + "')) AS t ORDER BY t.id;"
-    #
-    #     print(sql)
-    #     cur = config.conn.cursor()
-    #     cur.execute(sql)
-    #     res = cur.fetchall()
-    #     for a in res:
-    #         if a[4]==self.status["id"]:
-    #             is_reached = True
-    #         else:
-    #             is_reached = False
-    #         goal = Goal(a[0], a[1], a[2], a[3], is_reached, a[5], a[6], a[7], a[8])
-    #         self.goals.append(goal)
-    #     return
+    def fly(self, dest, price):
+        self.updatelocation(dest)
+        # location = self.currentStatus()["location"]
+        # price = self.get_price(location, dest)
+        raha = self.lisaraha(price)
+        self.update_budget(price, raha)
+
+    def get_price(self, loc, dest):
+        distanse = self.distance(loc, dest)
+        hinta = distanse / 10 * self.alennus_alue(dest)
+        return hinta
+
+    def lisaraha(self, hinta):
+        raha = hinta * 0.5
+        return raha
+
+    def alennus_alue(self, icao2):
+        tuple = (icao2,)
+        sql = '''SELECT latitude_deg FROM airport 
+            WHERE ident = %s'''
+        kursori = config.conn.cursor()
+        kursori.execute(sql, tuple)
+        tulos = kursori.fetchone()
+        if 20 < tulos[0] < 40:
+            return 0.5
+        elif 40 <= tulos[0] <= 60:
+            return 1
+        elif 0 < tulos[0] < 20:
+            return 0.3
+        elif 60 < tulos[0] < 80:
+            return 1.3
+
+    def distance(self, loc, dest):
+        dist = round(geodesic(self.coord(loc), self.coord(dest)).km, 3)
+        return dist
+
+    def coord(self, icao):
+        sql = f'''SELECT latitude_deg, longitude_deg 
+        FROM airport 
+        WHERE ident = {icao}'''
+        kursori = config.conn.cursor()
+        kursori.execute(sql, tuple)
+        tulos = kursori.fetchone()
+        return tulos
+
+    def tarkista_budjetti(self):
+        sql = f'''SELECT co2_budget FROM game WHERE id={self.id}'''
+        kursori=config.conn.cursor()
+        kursori.execute(sql)
+        tulos=kursori.fetchone()
+        return tulos[0]
+
