@@ -84,7 +84,7 @@ async function sade(evt) {
     popupContent.append(h4);
     const nappi = document.createElement('button');
     //nappi.classList.add('button');
-    nappi.innerText = 'Lenni';
+    nappi.innerText = 'Lennä';
     popupContent.append(nappi);
     flyhere.bindPopup(popupContent);
   }
