@@ -36,6 +36,13 @@ def airportList():
     args = request.args
     player = args.get('id')
     km_lkm = args.get('km')
+
+    # currentGame = Game(id)
+    #
+    # list = currentGame.getAiportsList(km_lkm)
+
+    # return list
+
     location = YHTEINEN.getInfoById(player)[3]
     YHTEINEN.valikoima(km_lkm,player)
     vaihtoehdotList = YHTEINEN.vaihtoehdot(km_lkm,player)
@@ -55,12 +62,21 @@ def airportList():
     jsonvast = json.dumps(vastaus)
     return Response(response=jsonvast, mimetype="application/json")
 
-
+# http://127.0.0.1:5000/flyto?id=1&dest=LFPG
 @app.route('/flyto')
 def flyto():
     args = request.args
     player = args.get('id')
     destination = args.get('dest')
+
+    # currentGame = Game(id)
+    #
+    #
+    # currentGame.fly(destination)
+    #
+    # currentStatus = currentGame.currentStatus()
+    #
+    # if(currentGame.gameOver()) return 'gameover'
 
     location = YHTEINEN.getInfoById(player)[3]
     price = YHTEINEN.hintakaava(location, destination)
@@ -71,7 +87,7 @@ def flyto():
 
     info = YHTEINEN.getInfoById(player)
     jdata = {
-        'player': player,
+        'id': player,
         'name': info[4],
         'location': destination,
         'budget': info[2],
@@ -84,6 +100,11 @@ def flyto():
 def newgame():
     args = request.args
     user = args.get('name')
+
+    # gameInfo = Game(0, user).currentStatus()
+    #
+    # return json.dumps(gameInfo)
+
     sql = f'''INSERT INTO game SET screen_name = "{user}"'''
     kursori = config.conn.cursor()
     kursori.execute(sql)
@@ -94,10 +115,7 @@ def newgame():
     YHTEINEN.updatelocation('EGLC', userId)
     YHTEINEN.aloitusbudjetti(userId)
 
-    sql = f'''SELECT * from game where id = "{userId}"'''
-    kursori.execute(sql)
-    vastaus = kursori.fetchone()
-
+    vastaus = YHTEINEN.getInfoById(userId)
     jsonVast = {
         'id': vastaus[0],
         'name': vastaus[4],

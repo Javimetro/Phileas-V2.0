@@ -8,10 +8,6 @@
     flex-wrap: wrap;
 }
 
-.space-evenly {
-    justify-content: space-evenly;
-}
-
 .hide {
     display: none;
 }
@@ -22,11 +18,6 @@ html, body {
     font-family: 'Cabin', sans-serif;
     color: var(--text);
     background-image: url("../img/backgroundd.jpg");
-}
-
-.container {
-    width: 100%;
-    margin: auto;
 }
 
 .page-header {
@@ -68,7 +59,8 @@ main {
 }
 
 #map {
-    width: 65%;
+    width: 70%;
+    height: 80vh;
 }
 
 h2 {
@@ -76,8 +68,9 @@ h2 {
 }
 
 .boxes {
-    width: 20%;
+    width: 30%;
     padding: 3rem 0 0 5rem;
+    box-sizing: border-box;
 }
 
 .box {
@@ -105,21 +98,56 @@ h2 {
 #player-modal {
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, .8);
+    background: rgba(13, 20, 23, 0.5);
     position: absolute;
     top: 0;
     z-index: 1000;
 }
 
 #player-form {
-    display: flex;
-    width: 50%;
-    margin: 4rem auto;
-    flex-direction: column;
+    margin: 10rem auto;
+    text-align: center;
 }
 
 #player-form input {
-    padding: 1rem;
+    border-radius: 10px;
+    border: 0.1rem solid #c74646;
+    background: rgba(255, 253, 253, 0.8);
+    color: #ee5c5c;
+    height: 2.5rem;
+}
+
+#submit-name:hover {
+    cursor: pointer;
+    border: 0.1rem solid #fffafa;
+    background: rgb(198, 70, 70);
+    color: #fffafa;
+}
+
+#kilometritSade {
+    padding-left: 22.5%;
+    position: absolute;
+    bottom: 7.5%;
+    z-index: 999;
+}
+
+#kilometritSade input {
+    border-radius: 10px;
+    border: 0.1rem solid var(--text);
+    background: #fffafa;
+    color: var(--text);
+    height: 2rem;
+}
+
+#tasta {
+    width: 20rem;
+}
+
+#paina:hover {
+    cursor: pointer;
+    border: 0.1rem solid #fffafa;
+    background: var(--text);
+    color: #fffafa;
 }
 
 .suggested-icon {
@@ -127,7 +155,6 @@ h2 {
     border-radius: 50%;
     border: 3px solid #c74646;
 }
-
 
 
 .popup .overlay {

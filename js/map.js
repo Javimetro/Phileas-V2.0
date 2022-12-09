@@ -14,7 +14,8 @@ document.querySelector('#player-form').addEventListener('submit', function(evt){
   evt.preventDefault();
   const nimi = document.querySelector('#player-input').value;
   document.querySelector('#player-modal').classList.add('hide');
-  //gameSetup();
+  togglePopup();
+  //gameSetup(apin url tähän);
 })
 
 //Nappi (tarina&ohjeet)
