@@ -72,7 +72,6 @@ document.querySelector('.goal').addEventListener('click', function (evt) {
 
 
 
-
 //Lennin sekoilu:
 
 const url = 'http://127.0.0.1:5000/kilometria?id=1&km=';
