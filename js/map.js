@@ -17,10 +17,6 @@ document.querySelector('#player-form').
       const nimi = document.querySelector('#player-input').value;
       document.querySelector('#player-modal').classList.add('hide');
       togglePopup();
-
-      //gameSetup(`${apiUrl}newgame?player=${playerName}&loc=${startLoc}`);
-
-      //gameSetup(`${apiUrl}newgame?player=${playerName}&loc=${startLoc}`);
     });
 
 async function newGame(evt) {
@@ -31,6 +27,10 @@ async function newGame(evt) {
   const respons = await fetch(newGameUrl);
   const jso = await respons.json();
   console.log(jso);
+
+  document.querySelector('#player-name').innerText = jso.name;
+  document.querySelector('#budjetti').innerText = jso.budget;
+
   const id = jso.id;
   console.log(id);
   return id;
@@ -50,21 +50,6 @@ const marker = L.marker([51.505299, 0.055278]).addTo(map);
 marker.bindPopup(`Tämänhetkinen sijaintisi (lentokentän nimi)`);
 marker.openPopup();
 
-//PELIN TAULUJEN TIETOJEN MUOKKAUS
-/*
-function updateStatus(status) {
-  document.querySelector('#player-name').innerHTML = `Player: ${status.name}`;
-  document.querySelector('#budjetti').innerHTML = `Player: ${status.name}`;
-  document.querySelector('#matka').innerHTML = `Player: ${status.name}`;
-}
-*/
-
-//PIILOTTAA KOHTEEN
-/*
-document.querySelector('.goal').addEventListener('click', function (evt) {
-  evt.currentTarget.classList.add('hide');
-});
-*/
 
 const url = 'http://127.0.0.1:5000/kilometria?id=1&km=';
 
