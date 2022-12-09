@@ -109,7 +109,6 @@ def city_country(userId):
     for i in tulos:
         print(f'{i[0]} ,{i[1]}')
 
-
 def onkoAlennusAlue(icao):
     tuple = (icao,)
     sql = '''SELECT latitude_deg FROM airport 

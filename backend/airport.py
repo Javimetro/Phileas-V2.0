@@ -59,6 +59,7 @@ class Airport:
         print(tulos)
         return tulos
 
+
     def vaihtoehdot(self,userId, kilometrit):
         self.kilometrit = kilometrit
         vaihtoehdot1 = []
