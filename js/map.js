@@ -42,12 +42,13 @@ nappi3.addEventListener('submit', newGame);
 //Nappi (tarina&ohjeet)
 function togglePopup() {
   document.getElementById('popup-1').classList.toggle('active');
-  //document.getElementById("map").classList.add('hide');
 }
 
-//pelaajan sijainti
-const marker = L.marker([51.505299, 0.055278]).addTo(map);
-marker.bindPopup(`Tämänhetkinen sijaintisi (lentokentän nimi)`);
+//pelaajan alkuperäinen sijainti
+let marker = L.marker([51.505299, 0.055278]).addTo(map);
+let h4 = document.createElement('h4');
+h4.innerText = 'London City Airport';
+marker.bindPopup(h4);
 marker.openPopup();
 
 
@@ -69,12 +70,17 @@ async function sade(evt) {
     const kord2 = json.vaihtoehdot[i]['longitude_deg'];
 
     //markerit ehdotetuille lentokentille
+    const markers = [];
+
     const flyhere = L.marker([kord1, kord2]).addTo(map);
     const suggested = L.divIcon({className: 'suggested-icon'});
     flyhere.setIcon(suggested);
+
+    markers.push(flyhere);
+
     //markereiden sisällä näkyvä teksti
-    const popupContent = document.createElement('div');
-    const h4 = document.createElement('h4');
+    let popupContent = document.createElement('div');
+    h4 = document.createElement('h4');
     h4.innerText = json.vaihtoehdot[i]['name'];
     popupContent.append(h4);
     const p = document.createElement('p');
@@ -102,8 +108,23 @@ async function sade(evt) {
     nappi.innerText = 'Lennä';
     popupContent.append(nappi);
     flyhere.bindPopup(popupContent);
-  }
 
+    nappi.addEventListener('click', function() {
+      marker.remove(map);
+      //flyhere.remove(map);
+
+      //siirrä muualle:
+      for (let markkeri of markers) {
+        markkeri.remove(map);
+      }
+
+      marker = L.marker([kord1, kord2]).addTo(map);
+      h4 = document.createElement('h4');
+      h4.innerText = json.vaihtoehdot[i]['name'];
+      marker.bindPopup(h4);
+      marker.openPopup();
+    });
+  }
 }
 
 const nappi2 = document.querySelector('#paina');
