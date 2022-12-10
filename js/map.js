@@ -68,6 +68,7 @@ async function sade(evt) {
   for (let i = 0; i <= 9; i++) {
     const kord1 = json.vaihtoehdot[i]['latitude_deg'];
     const kord2 = json.vaihtoehdot[i]['longitude_deg'];
+    const icao = json.vaihtoehdot[1]['ident'];
 
     //markerit ehdotetuille lentokentille
     const markers = [];
@@ -112,6 +113,17 @@ async function sade(evt) {
     nappi.addEventListener('click', function() {
       marker.remove(map);
       //flyhere.remove(map);
+      async function flyto() {
+      const flyToUrl = `${apiUrl}flyto?id=40&dest=${icao}&price=10`;
+      console.log(flyToUrl);
+      const respons = await fetch(flyToUrl);
+      const jso = await respons.json();
+      console.log(jso);
+      const flyHere = jso.location;
+      console.log(flyHere);
+    }
+    flyto()
+
 
       //siirrä muualle:
       for (let markkeri of markers) {
@@ -129,3 +141,4 @@ async function sade(evt) {
 
 const nappi2 = document.querySelector('#paina');
 nappi2.addEventListener('click', sade);
+
