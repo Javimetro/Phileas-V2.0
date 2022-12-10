@@ -70,43 +70,11 @@ class Game:
         raha = self.lisaraha(price)
         self.update_budget(price, raha)
 
-    def get_price(self, loc, dest):
-        distanse = self.distance(loc, dest)
-        hinta = distanse / 10 * self.alennus_alue(dest)
-        return hinta
 
     def lisaraha(self, hinta):
         raha = hinta * 0.5
         return raha
 
-    def alennus_alue(self, icao2):
-        tuple = (icao2,)
-        sql = '''SELECT latitude_deg FROM airport 
-            WHERE ident = %s'''
-        kursori = config.conn.cursor()
-        kursori.execute(sql, tuple)
-        tulos = kursori.fetchone()
-        if 20 < tulos[0] < 40:
-            return 0.5
-        elif 40 <= tulos[0] <= 60:
-            return 1
-        elif 0 < tulos[0] < 20:
-            return 0.3
-        elif 60 < tulos[0] < 80:
-            return 1.3
-
-    def distance(self, loc, dest):
-        dist = round(geodesic(self.coord(loc), self.coord(dest)).km, 3)
-        return dist
-
-    def coord(self, icao):
-        sql = f'''SELECT latitude_deg, longitude_deg 
-        FROM airport 
-        WHERE ident = {icao}'''
-        kursori = config.conn.cursor()
-        kursori.execute(sql, tuple)
-        tulos = kursori.fetchone()
-        return tulos
 
     def tarkista_budjetti(self):
         sql = f'''SELECT co2_budget FROM game WHERE id={self.id}'''
@@ -114,4 +82,3 @@ class Game:
         kursori.execute(sql)
         tulos=kursori.fetchone()
         return tulos[0]
-

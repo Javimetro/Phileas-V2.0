@@ -38,26 +38,11 @@ def airportList():
     km_lkm = args.get('km')
 
     currentGame = Game(userId)
-    air = Airport(userId)
+    currentIcao = currentGame.currentStatus()['location']
+    air = Airport(currentIcao)
 
-    # currentGame = Game(id)
-    # list = currentGame.getAiportsList(km_lkm)
-    # return list
-
-    location = currentGame.currentStatus()['location']
-    air.valikoima(km_lkm)
     vaihtoehdotList = air.vaihtoehdot(km_lkm)
-
-    for vaihtoehto in vaihtoehdotList:
-        icao2 = vaihtoehto['ident']
-        hinta = currentGame.get_price(location,icao2)
-        etaisyys = currentGame.distance(location,icao2)
-        vaihtoehto['price']=round(hinta,1)
-        vaihtoehto['distance']=int(etaisyys)
-
     vastaus = {
-        'ID': userId,
-        'km_lkm': km_lkm,
         'vaihtoehdot': vaihtoehdotList
     }
     jsonvast = json.dumps(vastaus)
