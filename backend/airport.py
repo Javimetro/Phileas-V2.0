@@ -23,26 +23,25 @@ class Airport:
 
 
 
-    def haeLatLong(self, userId):
-        sql = f'''select latitude_deg, longitude_deg from airport, game where game.id={userId} and location = ident'''
+    def haeLatLong(self):
+        sql = f'''select latitude_deg, longitude_deg from airport, game where game.id={self.userId} and location = ident'''
         kursori = config.conn.cursor()
         kursori.execute(sql)
         tulos = kursori.fetchall()
         self.lat = float(tulos[0][0])
-        print(f'lat on: {self.lat}')
+        #print(f'lat on: {self.lat}')
         self.long = float(tulos[0][1])
-        print(f'long on: {self.long}')
+        #print(f'long on: {self.long}')
         return tulos
 
-    def valikoima(self, userId, kilometrit):
+    def valikoima(self, kilometrit):
         self.kilometrit = kilometrit
-        lat = air.haeLatLong(userId)[0][0]
-        long = air.haeLatLong(userId)[0][1]
+        lat = self.haeLatLong()[0][0]
+        long = self.haeLatLong()[0][1]
         northlimit = lat + kilometrit * 0.01
         southlimit = lat - kilometrit * 0.01
         westlimit = long
         eastlimit = long + kilometrit * 0.01
-        print(f'N{northlimit},S{southlimit},E{eastlimit},W{westlimit}')
         if -180 < eastlimit < 180:
             sql = f'''SELECT ident, name, latitude_deg, longitude_deg
                 FROM Airport WHERE (type LIKE 'medium%' OR type LIKE'large%') AND latitude_deg BETWEEN {southlimit} AND {northlimit}
@@ -63,10 +62,10 @@ class Airport:
 
 
 
-    def vaihtoehdot(self,userId, kilometrit):
+    def vaihtoehdot(self, kilometrit):
         self.kilometrit = kilometrit
         vaihtoehdot1 = []
-        tulos = air.valikoima(userId,kilometrit)
+        tulos = self.valikoima(self.userId,)
         for i in range(10):
             vaihtoehdot1.append(random.choice(tulos))
         return vaihtoehdot1
@@ -81,19 +80,15 @@ class Airport:
         print(tulos)
         return tulos
 
-    def city_country(self,userId):
+    def city_country(self):
         sql = f'''select airport.municipality, country.name from airport, country, game 
-        where game.id={userId} and  game.location=airport.ident and airport.iso_country=country.iso_country;'''
+        where game.id={self.userId} and  game.location=airport.ident and airport.iso_country=country.iso_country;'''
         kursori = config.conn.cursor()
         kursori.execute(sql)
         tulos = kursori.fetchall()
         for i in tulos:
             print(f'{i[0]} ,{i[1]}')
 
-
-air = Airport(1)
-air.londoncityairport()
-air.valikoima(1,500)
 
 
 
