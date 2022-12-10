@@ -42,15 +42,16 @@ class Airport:
         southlimit = lat - kilometrit * 0.01
         westlimit = long
         eastlimit = long + kilometrit * 0.01
+        print(f'N{northlimit},S{southlimit},E{eastlimit},W{westlimit}')
         if -180 < eastlimit < 180:
             sql = f'''SELECT ident, name, latitude_deg, longitude_deg
-                FROM Airport WHERE type='large_airport' OR type='medium_airport' AND latitude_deg BETWEEN {southlimit} AND {northlimit}
+                FROM Airport WHERE (type LIKE 'medium%' OR type LIKE'large%') AND latitude_deg BETWEEN {southlimit} AND {northlimit}
                 AND longitude_deg BETWEEN {westlimit} AND {eastlimit}'''
         elif eastlimit > 180:
             eastlimit = eastlimit - 360
 
             sql = f'''SELECT ident, name, latitude_deg, longitude_deg
-                FROM Airport WHERE type='large_airport' OR type='medium_airport' AND latitude_deg BETWEEN {southlimit} AND {northlimit}
+                FROM Airport WHERE (type LIKE 'medium%' OR type LIKE'large%') AND latitude_deg BETWEEN {southlimit} AND {northlimit}
                 AND longitude_deg BETWEEN {-180} AND {eastlimit} AND {westlimit} AND {180}'''
 
         kursori = config.conn.cursor(dictionary=True)
@@ -58,6 +59,8 @@ class Airport:
         tulos = kursori.fetchall()
         print(tulos)
         return tulos
+
+
 
 
     def vaihtoehdot(self,userId, kilometrit):
@@ -90,6 +93,7 @@ class Airport:
 
 air = Airport(1)
 air.londoncityairport()
+air.valikoima(1,500)
 
 
 
