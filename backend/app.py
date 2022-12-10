@@ -8,7 +8,7 @@ from flask_cors import CORS
 
 import config
 from game import Game
-import YHTEINEN
+from airport import Airport
 
 
 
@@ -34,28 +34,29 @@ config.conn = mysql.connector.connect(
 @app.route('/kilometria')
 def airportList():
     args = request.args
-    player = args.get('id')
+    userId = args.get('id')
     km_lkm = args.get('km')
 
-    # currentGame = Game(id)
-    #
-    # list = currentGame.getAiportsList(km_lkm)
+    currentGame = Game(userId)
+    air = Airport(userId)
 
+    # currentGame = Game(id)
+    # list = currentGame.getAiportsList(km_lkm)
     # return list
 
-    location = YHTEINEN.getInfoById(player)[3]
-    YHTEINEN.valikoima(km_lkm,player)
-    vaihtoehdotList = YHTEINEN.vaihtoehdot(km_lkm,player)
+    location = currentGame.currentStatus()['location']
+    air.valikoima(km_lkm)
+    vaihtoehdotList = air.vaihtoehdot(km_lkm)
 
     for vaihtoehto in vaihtoehdotList:
         icao2 = vaihtoehto['ident']
-        hinta = YHTEINEN.hintakaava(location,icao2)
-        etaisyys = YHTEINEN.etaisyys(location,icao2)
+        hinta = currentGame.get_price(location,icao2)
+        etaisyys = currentGame.distance(location,icao2)
         vaihtoehto['price']=round(hinta,1)
         vaihtoehto['distance']=int(etaisyys)
 
     vastaus = {
-        'name': player,
+        'ID': userId,
         'km_lkm': km_lkm,
         'vaihtoehdot': vaihtoehdotList
     }

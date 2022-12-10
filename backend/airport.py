@@ -38,10 +38,10 @@ class Airport:
         self.kilometrit = kilometrit
         lat = self.haeLatLong()[0][0]
         long = self.haeLatLong()[0][1]
-        northlimit = lat + kilometrit * 0.01
-        southlimit = lat - kilometrit * 0.01
-        westlimit = long
-        eastlimit = long + kilometrit * 0.01
+        northlimit = float(lat) + float(kilometrit) * float(0.01)
+        southlimit = float(lat) - float(kilometrit) * float(0.01)
+        westlimit = float(long)
+        eastlimit = float(long) + float(kilometrit) * float(0.01)
         if -180 < eastlimit < 180:
             sql = f'''SELECT ident, name, latitude_deg, longitude_deg
                 FROM Airport WHERE (type LIKE 'medium%' OR type LIKE'large%') AND latitude_deg BETWEEN {southlimit} AND {northlimit}
@@ -68,6 +68,7 @@ class Airport:
         tulos = self.valikoima(self.userId,)
         for i in range(10):
             vaihtoehdot1.append(random.choice(tulos))
+        #print(vaihtoehdot1)
         return vaihtoehdot1
 
     def londoncityairport(self):
@@ -88,6 +89,9 @@ class Airport:
         tulos = kursori.fetchall()
         for i in tulos:
             print(f'{i[0]} ,{i[1]}')
+
+
+
 
 
 
