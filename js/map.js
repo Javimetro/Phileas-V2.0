@@ -10,6 +10,8 @@ map.setView([60, 24], 7);
 
 const apiUrl = 'http://127.0.0.1:5000/';
 
+
+
 //pelaajan nimi
 document.querySelector('#player-form').
     addEventListener('submit', function(evt) {
@@ -18,6 +20,8 @@ document.querySelector('#player-form').
       document.querySelector('#player-modal').classList.add('hide');
       togglePopup();
     });
+
+let id;
 
 async function newGame(evt) {
   evt.preventDefault();
@@ -31,10 +35,11 @@ async function newGame(evt) {
   document.querySelector('#player-name').innerText = jso.name;
   document.querySelector('#budjetti').innerText = jso.budget;
 
-  const id = jso.id;
+  id = jso.id;
   console.log(id);
-  return id;
 }
+
+console.log(id);
 
 const nappi3 = document.querySelector('#player-form');
 nappi3.addEventListener('submit', newGame);
@@ -72,6 +77,9 @@ async function sade(evt) {
     const kord1 = json.vaihtoehdot[i]['latitude_deg'];
     const kord2 = json.vaihtoehdot[i]['longitude_deg'];
     const icao = json.vaihtoehdot[i]['ident'];
+    const price = json.vaihtoehdot[i]['price'];
+    console.log(price);
+
 
     //markerit ehdotetuille lentokentille
     const flyhere = L.marker([kord1, kord2]).addTo(map);
@@ -115,7 +123,7 @@ async function sade(evt) {
       marker.remove(map);
 
       async function flyto() {
-      const flyToUrl = `${apiUrl}flyto?id=1&dest=${icao}&price=10`;
+      const flyToUrl = `${apiUrl}flyto?id=${id}&dest=${icao}&price=${price}`;
       console.log(flyToUrl);
       const respons = await fetch(flyToUrl);
       const jso = await respons.json();
