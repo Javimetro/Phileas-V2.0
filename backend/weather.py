@@ -19,12 +19,12 @@ config.conn = mysql.connector.connect(
 class Weather:
 
 
-    def __init__(self, userId):
+    def __init__(self, cur_icao):
         #air = Airport(userId)
         apikey = 'b506dbf5aa172758d111318ced349bb3'
 
         request = "https://api.openweathermap.org/data/2.5/weather?lat=" + \
-                 str(Airport.haeLatLong(userId)[0][0]) + "&lon=" + str(Airport.haeLatLong(userId)[0][1]) + "&appid=" + apikey + "&units=metric"
+                 str(Airport.haeLatLong(cur_icao)[0][0]) + "&lon=" + str(Airport.haeLatLong(cur_icao)[0][1]) + "&appid=" + apikey + "&units=metric"
         self.vastaus = requests.get(request).json()
 
 
