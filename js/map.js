@@ -10,8 +10,6 @@ map.setView([60, 24], 7);
 
 const apiUrl = 'http://127.0.0.1:5000/';
 
-
-
 //pelaajan nimi
 document.querySelector('#player-form').
     addEventListener('submit', function(evt) {
@@ -56,7 +54,6 @@ h4.innerText = 'London City Airport';
 marker.bindPopup(h4);
 marker.openPopup();
 
-
 const url = 'http://127.0.0.1:5000/kilometria?id=1&km=';
 
 async function sade(evt) {
@@ -79,7 +76,6 @@ async function sade(evt) {
     const icao = json.vaihtoehdot[i]['ident'];
     const price = json.vaihtoehdot[i]['price'];
     console.log(price);
-
 
     //markerit ehdotetuille lentokentille
     const flyhere = L.marker([kord1, kord2]).addTo(map);
@@ -123,24 +119,25 @@ async function sade(evt) {
       marker.remove(map);
 
       async function flyto() {
-      const flyToUrl = `${apiUrl}flyto?id=${id}&dest=${icao}&price=${price}`;
-      console.log(flyToUrl);
-      const respons = await fetch(flyToUrl);
-      const jso = await respons.json();
-      console.log(jso);
-      const flyHere = jso.location;
-      console.log(flyHere);
+        const flyToUrl = `${apiUrl}flyto?id=${id}&dest=${icao}&price=${price}`;
+        console.log(flyToUrl);
+        const respons = await fetch(flyToUrl);
+        const jso = await respons.json();
+        console.log(jso);
+        const flyHere = jso.location;
+        console.log(flyHere);
 
-      document.querySelector('#budjetti').innerText = jso.budget;
-      /*tämä ei toimi vielä
-      const vuorot = parseInt(document.querySelector('#vuorot')).value
-        console.log(vuorot +'vuoroa')
-      document.querySelector('#vuorot').innerText = vuorot+1;
-      */
-      document.querySelector('#raha').innerText = jso.consumed;
+        document.querySelector('#budjetti').innerText = jso.budget;
+        /*tämä ei toimi vielä
+        const vuorot = parseInt(document.querySelector('#vuorot')).value
+          console.log(vuorot +'vuoroa')
+        document.querySelector('#vuorot').innerText = vuorot+1;
+        */
+        document.querySelector('#raha').innerText = jso.consumed;
 
-    }
-    flyto()
+      }
+
+      flyto();
 
       for (let markkeri of markers) {
         markkeri.remove(map);
@@ -160,3 +157,23 @@ async function sade(evt) {
 const nappi2 = document.querySelector('#paina');
 nappi2.addEventListener('click', sade);
 
+//leaderboard
+function togglePopup2() {
+  const taulu = document.getElementById('leaderboard');
+  taulu.classList.toggle('active');
+
+  const placement = document.querySelectorAll('#end-content h3');
+  const name = document.querySelectorAll('#end-content h4');
+  const points = document.querySelectorAll('#end-content p');
+
+  for (let i = 0; i < 7; i++) {
+    placement[i].innerText = `${i + 1}.`;
+    name[i].innerText = 'tähän nimi';
+    points[i].innerText = 'tähän pistemäärä';
+  }
+}
+
+const uusipeli = document.querySelector('#new-game-button');
+uusipeli.addEventListener('click', function() {
+  console.log('uusi peli alkaa tästä!!!!!!!!!');
+});
