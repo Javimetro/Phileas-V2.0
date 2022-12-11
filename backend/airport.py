@@ -18,9 +18,9 @@ class Airport:
         kursori = config.conn.cursor()
         kursori.execute(sql)
         tulos = kursori.fetchall()
-        self.lat = float(tulos[0][0])               #miksi?
+        #self.lat = float(tulos[0][0])               #miksi?
         #print(f'lat on: {self.lat}')
-        self.long = float(tulos[0][1])
+        #self.long = float(tulos[0][1])
         #print(f'long on: {self.long}')
         return tulos
 
@@ -52,28 +52,19 @@ class Airport:
 
     def vaihtoehdot(self, kilometrit):
         #self.kilometrit = kilometrit
-        vaihtoehdot1 = []
+        self.vaihtoehdot1 = []
         tulos = self.valikoima(kilometrit)
         for i in range(10):
-            vaihtoehdot1.append(random.choice(tulos))
+            self.vaihtoehdot1.append(random.choice(tulos))
         #print(vaihtoehdot1)
-        for vaihtoehto in vaihtoehdot1:
+        for vaihtoehto in self.vaihtoehdot1:
             dest_icao = vaihtoehto['ident']
             hinta = self.get_price(dest_icao)
             etaisyys = self.distance(dest_icao)
             vaihtoehto['price'] = round(hinta, 1)
             vaihtoehto['distance'] = int(etaisyys)
-        return vaihtoehdot1
+        return self.vaihtoehdot1
 
-    def londoncityairport(self):
-        sql = '''select ident, name, latitude_deg, longitude_deg
-            from airport
-            where ident = "EGLC"'''
-        kursori = config.conn.cursor()
-        kursori.execute(sql)
-        tulos = kursori.fetchone()
-        print(tulos)
-        return tulos
 
     def city_country(self):
         sql = f'''select airport.municipality, country.name from airport, country 
@@ -87,7 +78,7 @@ class Airport:
     def get_price(self, dest_icao):
         distanse = self.distance(dest_icao)
         hinta = distanse / 10 * self.alennus_alue(dest_icao)
-        return hinta
+        return round(hinta)
 
     def alennus_alue(self, dest_icao):
         tuple = (dest_icao,)
@@ -119,3 +110,28 @@ class Airport:
         kursori.execute(sql)
         tulos = kursori.fetchone()
         return tulos
+
+    def yht_etaisyys(self, dest_icao):
+        sql1 = f'''UPDATE game SET kilometrit_yht = kilometrit_yht + {self.distance(dest_icao)}'''
+        sql2 = f'''SELECT kilometrit_yht FROM game WHERE location = {self.cur_icao}'''
+        kursori = config.conn.cursor()
+        kursori.execute(sql1)
+        kursori.execute(sql2)
+        tulos = kursori.fetchone()
+        return tulos
+
+
+
+    def londoncityairport(self, dest_icao):
+        sql = '''select ident, name, latitude_deg, longitude_deg
+                from airport
+                where ident = "EGLC"'''
+        kursori = config.conn.cursor()
+        kursori.execute(sql)
+        lontoo = kursori.fetchone()
+
+        if self.yht_etaisyys(dest_icao) > 5000:
+            etaisyysLCA = round(geodesic(self.coord(self.cur_icao), self.coord(lontoo[0])).km, 6)
+            print(f'etäisyys Lontoosta: {etaisyysLCA}\n')
+            if -50 < self.haeLatLong()[0][1] < 5 and self.distance(dest_icao) >= etaisyysLCA:
+                self.vaihtoehdot1.append(lontoo)

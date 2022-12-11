@@ -65,18 +65,18 @@ async function sade(evt) {
   const json = await response.json();
   console.log(json);
   const sade = json.km_lkm;
+  //lista ehdotettujen lentokenttien markereille
+  const markers = [];
+
   for (let i = 0; i <= 9; i++) {
     const kord1 = json.vaihtoehdot[i]['latitude_deg'];
     const kord2 = json.vaihtoehdot[i]['longitude_deg'];
-    const icao = json.vaihtoehdot[1]['ident'];
+    const icao = json.vaihtoehdot[i]['ident'];
 
     //markerit ehdotetuille lentokentille
-    const markers = [];
-
     const flyhere = L.marker([kord1, kord2]).addTo(map);
     const suggested = L.divIcon({className: 'suggested-icon'});
     flyhere.setIcon(suggested);
-
     markers.push(flyhere);
 
     //markereiden sisällä näkyvä teksti
@@ -111,21 +111,29 @@ async function sade(evt) {
     flyhere.bindPopup(popupContent);
 
     nappi.addEventListener('click', function() {
+      document.querySelector('#tasta').value = '';
       marker.remove(map);
-      //flyhere.remove(map);
+
       async function flyto() {
-      const flyToUrl = `${apiUrl}flyto?id=40&dest=${icao}&price=10`;
+      const flyToUrl = `${apiUrl}flyto?id=1&dest=${icao}&price=10`;
       console.log(flyToUrl);
       const respons = await fetch(flyToUrl);
       const jso = await respons.json();
       console.log(jso);
       const flyHere = jso.location;
       console.log(flyHere);
+
+      document.querySelector('#budjetti').innerText = jso.budget;
+      /*tämä ei toimi vielä
+      const vuorot = parseInt(document.querySelector('#vuorot')).value
+        console.log(vuorot +'vuoroa')
+      document.querySelector('#vuorot').innerText = vuorot+1;
+      */
+      document.querySelector('#raha').innerText = jso.consumed;
+
     }
     flyto()
 
-
-      //siirrä muualle:
       for (let markkeri of markers) {
         markkeri.remove(map);
       }
@@ -135,6 +143,8 @@ async function sade(evt) {
       h4.innerText = json.vaihtoehdot[i]['name'];
       marker.bindPopup(h4);
       marker.openPopup();
+      //laittaa syötelaatikon takaisin
+      document.querySelector('#kilometritSade').classList.remove('hide');
     });
   }
 }
