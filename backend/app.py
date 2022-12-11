@@ -5,6 +5,7 @@ import mysql.connector
 from dotenv import load_dotenv
 from flask import Flask, Response, request
 from flask_cors import CORS
+#from weather import Weather
 
 import config
 from game import Game
@@ -80,3 +81,5 @@ def newgame():
 
 if __name__ == '__main__':
     app.run(use_reloader=True, host='127.0.0.1', port=os.environ.get('PORT'))
+
+

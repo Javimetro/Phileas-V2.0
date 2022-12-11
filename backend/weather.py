@@ -1,26 +1,20 @@
 import requests
-import config
-import os
-from app import Airport
-import mysql.connector
+#import config
+#import os
+from airport import Airport
+
+
 #import json
 
 from dotenv import load_dotenv
 load_dotenv()
 
-config.conn = mysql.connector.connect(
-         host=os.environ.get('HOST'),
-         port= 3306,
-         database=os.environ.get('DB_NAME'),
-         user=os.environ.get('DB_USER'),
-         password=os.environ.get('DB_PASS'),
-         autocommit=True
-         )
+
 class Weather:
 
 
     def __init__(self, cur_icao):
-        #air = Airport(userId)
+
         apikey = 'b506dbf5aa172758d111318ced349bb3'
 
         request = "https://api.openweathermap.org/data/2.5/weather?lat=" + \
@@ -38,6 +32,3 @@ class Weather:
         }
         print(self.json)
         return self.json
-
-w = Weather(1) #test
-w.weatherJson()

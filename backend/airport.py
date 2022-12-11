@@ -1,8 +1,8 @@
 import random
 import os
-
+#from game import Game
 from geopy.distance import geodesic
-
+#from weather import Weather
 import config
 
 
@@ -18,15 +18,10 @@ class Airport:
         kursori = config.conn.cursor()
         kursori.execute(sql)
         tulos = kursori.fetchall()
-        #self.lat = float(tulos[0][0])               #miksi?
-        #print(f'lat on: {self.lat}')
-        #self.long = float(tulos[0][1])
-        #print(f'long on: {self.long}')
         return tulos
 
     def valikoima(self, kilometrit):
-        # self.kilometrit = kilometrit              # ei tarvii luoda muuttujan
-        lat = self.haeLatLong()[0][0]               #kutsutaan funktion vain kerran
+        lat = self.haeLatLong()[0][0]
         long = self.haeLatLong()[0][1]
         northlimit = float(lat) + float(kilometrit) * float(0.01)
         southlimit = float(lat) - float(kilometrit) * float(0.01)
@@ -125,7 +120,7 @@ class Airport:
     def londoncityairport(self, dest_icao):
         sql = '''select ident, name, latitude_deg, longitude_deg
                 from airport
-                where ident = "EGLC"'''
+                WHERE ident = "EGLC"'''
         kursori = config.conn.cursor()
         kursori.execute(sql)
         lontoo = kursori.fetchone()
