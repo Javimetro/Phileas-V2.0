@@ -115,7 +115,7 @@ async function sade(evt) {
       marker.remove(map);
 
       async function flyto() {
-      const flyToUrl = `${apiUrl}flyto?id=40&dest=${icao}&price=10`;
+      const flyToUrl = `${apiUrl}flyto?id=1&dest=${icao}&price=10`;
       console.log(flyToUrl);
       const respons = await fetch(flyToUrl);
       const jso = await respons.json();
