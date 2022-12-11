@@ -65,15 +65,6 @@ class Airport:
             vaihtoehto['distance'] = int(etaisyys)
         return self.vaihtoehdot1
 
-    def londoncityairport(self):
-        sql = '''select ident, name, latitude_deg, longitude_deg
-            from airport
-            where ident = "EGLC"'''
-        kursori = config.conn.cursor()
-        kursori.execute(sql)
-        tulos = kursori.fetchone()
-        print(tulos)
-        return tulos
 
     def city_country(self):
         sql = f'''select airport.municipality, country.name from airport, country 
@@ -144,4 +135,3 @@ class Airport:
             print(f'etäisyys Lontoosta: {etaisyysLCA}\n')
             if -50 < self.haeLatLong()[0][1] < 5 and self.distance(dest_icao) >= etaisyysLCA:
                 self.vaihtoehdot1.append(lontoo)
-
