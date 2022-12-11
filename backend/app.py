@@ -55,7 +55,7 @@ def flyto():
     args = request.args
     userid = args.get('id')
     destination = args.get('dest')
-    price = int(args.get('price'))
+    price = float(args.get('price'))
 
     currentGame = Game(userid)
     balance = currentGame.tarkista_budjetti()
