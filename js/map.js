@@ -8,7 +8,7 @@ L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
 }).addTo(map);
 map.setView([60, 24], 7);
 
-const apiUrl = 'http://127.0.0.1:3000/';
+const apiUrl = 'http://127.0.0.1:5000/';
 
 //pelaajan nimi
 document.querySelector('#player-form').
@@ -71,7 +71,7 @@ async function sade(evt) {
   //lista ehdotettujen lentokenttien markereille
   const markers = [];
 
-  for (let i = 0; i <= 9; i++) {
+  for (let i = 0; i < json.vaihtoehdot.length; i++) {
     const kord1 = json.vaihtoehdot[i]['latitude_deg'];
     const kord2 = json.vaihtoehdot[i]['longitude_deg'];
     const icao = json.vaihtoehdot[i]['ident'];
