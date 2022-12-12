@@ -1,13 +1,13 @@
 
 from geopy.distance import geodesic
 import config
+from airport import Airport
+
 
 class Game:
 
     def __init__(self, userid, name=None):
         self.status = {}
-
-        self.gameover = False
 
         if userid == 0:
             # new game
@@ -22,7 +22,6 @@ class Game:
         kursori.execute(sql)
         self.id = kursori.lastrowid
 
-        # vuorot = 0
         self.updatelocation('EGLC')
         self.set_budget()
         kursori.close()
@@ -44,20 +43,23 @@ class Game:
             'name': info[4],
             'location': info[3],
             'budget': info[2],
-            'consumed': info[1]
+            'consumed': info[1],
+            'distance': info[5],
+            'times': info[6]
         }
         kursori.close()
         return jdata
 
     def set_budget(self):
-        sql = f'''UPDATE game SET co2_budget=1000, co2_consumed=0 WHERE id={self.id}'''
+        sql = f'''UPDATE game SET co2_budget=1300, co2_consumed=0, kilometrit_yht=0, vuorot_yht=0 WHERE id={self.id}'''
         kursori = config.conn.cursor()
         kursori.execute(sql)
         tulos = kursori.fetchone()
         return tulos
 
     def update_budget(self, hinta, raha):
-        sql = f'''UPDATE game SET co2_budget=co2_budget-{hinta}+{raha}, co2_consumed=co2_consumed+{hinta} WHERE id={self.id}'''
+        sql = f'''UPDATE game SET co2_budget=co2_budget-{hinta}+{raha}, co2_consumed=co2_consumed+{hinta}, 
+        vuorot_yht=vuorot_yht+1 WHERE id={self.id}'''
         kursori = config.conn.cursor()
         kursori.execute(sql)
         tulos = kursori.fetchone()
@@ -65,8 +67,7 @@ class Game:
 
     def fly(self, dest, price):
         self.updatelocation(dest)
-        # location = self.currentStatus()["location"]
-        # price = self.get_price(location, dest)
+
         raha = self.lisaraha(price)
         self.update_budget(price, raha)
 
@@ -82,3 +83,11 @@ class Game:
         kursori.execute(sql)
         tulos=kursori.fetchone()
         return tulos[0]
+
+    def update_kilometrit(self, distance):
+        sql = f'''UPDATE game SET kilometrit_yht=kilometrit_yht+{distance} WHERE id={self.id}'''
+        kursori = config.conn.cursor()
+        kursori.execute(sql)
+        tulos = kursori.fetchone()
+        return tulos
+
