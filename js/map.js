@@ -8,7 +8,7 @@ L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
 }).addTo(map);
 map.setView([60, 24], 7);
 
-const apiUrl = 'http://127.0.0.1:5000/';
+const apiUrl = 'http://127.0.0.1:3000/';
 
 //pelaajan nimi
 document.querySelector('#player-form').
@@ -24,7 +24,7 @@ let id;
 async function newGame(evt) {
   evt.preventDefault();
   const nimi = document.querySelector('#player-input').value;
-  let newGameUrl = 'http://127.0.0.1:5000/newgame?name=' + nimi;
+  let newGameUrl = `${apiUrl}newgame?name=` + nimi;
   console.log(newGameUrl);
   const respons = await fetch(newGameUrl);
   const jso = await respons.json();
@@ -54,9 +54,10 @@ h4.innerText = 'London City Airport';
 marker.bindPopup(h4);
 marker.openPopup();
 
-const url = 'http://127.0.0.1:5000/kilometria?id=1&km=';
+
 
 async function sade(evt) {
+  const url = `${apiUrl}kilometria?id=${id}&km=`;
   evt.preventDefault();
   document.querySelector('#kilometritSade').classList.add('hide');
 
@@ -114,7 +115,7 @@ async function sade(evt) {
     popupContent.append(nappi);
     flyhere.bindPopup(popupContent);
 
-    nappi.addEventListener('click', function() {
+    nappi.addEventListener('click', async function() {
       document.querySelector('#tasta').value = '';
       marker.remove(map);
 
@@ -137,7 +138,7 @@ async function sade(evt) {
 
       }
 
-      flyto();
+      await flyto();
 
       for (let markkeri of markers) {
         markkeri.remove(map);
