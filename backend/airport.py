@@ -2,8 +2,8 @@ import random
 import os
 #from game import Game
 from geopy.distance import geodesic
-#from weather import Weather
 import config
+import requests
 
 
 class Airport:
@@ -54,10 +54,15 @@ class Airport:
             dest_icao = vaihtoehto['ident']
             hinta = self.get_price(dest_icao)
             etaisyys = self.distance(dest_icao)
+            weather = self.weather(dest_icao)
             vaihtoehto['price'] = round(hinta, 1)
             vaihtoehto['distance'] = int(etaisyys)
             vaihtoehto['city'] = self.city_country(vaihtoehto['ident'])[0]
             vaihtoehto['country'] = self.city_country(vaihtoehto['ident'])[1]
+            vaihtoehto['weather_main'] = weather['main']
+            vaihtoehto['weather_description'] = weather['description']
+            vaihtoehto['weather_temp'] = weather['temp']
+            vaihtoehto['weather_humidity'] = weather['humidity']
             print(vaihtoehto)
         return self.vaihtoehdot1
 
@@ -125,3 +130,22 @@ class Airport:
         lontoo = kursori.fetchone()
         print(lontoo)
         return lontoo
+
+    def weather(self, icao):
+        self.cur_icao = icao
+        apikey = 'b506dbf5aa172758d111318ced349bb3'
+
+        request = "https://api.openweathermap.org/data/2.5/weather?lat=" + \
+                  str(self.haeLatLong()[0][0]) + "&lon=" + str(
+            self.haeLatLong()[0][1]) + "&appid=" + apikey + "&units=metric"
+        self.vastaus = requests.get(request).json()
+
+
+        self.json = {
+            'main' : self.vastaus["weather"][0]["main"],
+            'description' : self.vastaus["weather"][0]["description"],
+            'temp' : self.vastaus["main"]["temp"],
+            'humidity' : self.vastaus["main"]["humidity"],
+        }
+
+        return self.json
