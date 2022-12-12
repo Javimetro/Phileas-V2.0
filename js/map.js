@@ -6,7 +6,7 @@ L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
   maxZoom: 20,
   subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
 }).addTo(map);
-map.setView([60, 24], 7);
+map.setView([60, 24], 5);
 
 const apiUrl = 'http://127.0.0.1:5000/';
 
@@ -24,7 +24,7 @@ let id;
 async function newGame(evt) {
   evt.preventDefault();
   const nimi = document.querySelector('#player-input').value;
-  let newGameUrl = `${apiUrl}newgame?name=` + nimi;
+  let newGameUrl = `${apiUrl}newgame?name=${nimi}`;
   console.log(newGameUrl);
   const respons = await fetch(newGameUrl);
   const jso = await respons.json();
@@ -35,6 +35,7 @@ async function newGame(evt) {
 
   id = jso.id;
   console.log(id);
+  return jso;
 }
 
 console.log(id);
@@ -53,8 +54,6 @@ let h4 = document.createElement('h4');
 h4.innerText = 'London City Airport';
 marker.bindPopup(h4);
 marker.openPopup();
-
-
 
 async function sade(evt) {
   const url = `${apiUrl}kilometria?id=${id}&km=`;
@@ -129,13 +128,9 @@ async function sade(evt) {
         console.log(flyHere);
 
         document.querySelector('#budjetti').innerText = jso.budget;
-        /*tämä ei toimi vielä
-        const vuorot = parseInt(document.querySelector('#vuorot')).value
-          console.log(vuorot +'vuoroa')
-        document.querySelector('#vuorot').innerText = vuorot+1;
-        */
+        document.querySelector('#vuorot').innerText = jso.times;
         document.querySelector('#raha').innerText = jso.consumed;
-
+        document.querySelector('#kilometrit').innerText = jso.distance;
       }
 
       await flyto();
@@ -159,7 +154,8 @@ const nappi2 = document.querySelector('#paina');
 nappi2.addEventListener('click', sade);
 
 //leaderboard
-function togglePopup2() {
+/* ei toimi, koska ei pysty hakemaan tietoa toisesta funktiosta jossa on evt
+async function togglePopup2() {
   const taulu = document.getElementById('leaderboard');
   taulu.classList.toggle('active');
 
@@ -167,12 +163,15 @@ function togglePopup2() {
   const name = document.querySelectorAll('#end-content h4');
   const points = document.querySelectorAll('#end-content p');
 
+  const data = await newGame();
+
   for (let i = 0; i < 7; i++) {
     placement[i].innerText = `${i + 1}.`;
-    name[i].innerText = 'tähän nimi';
-    points[i].innerText = 'tähän pistemäärä';
+    name[i].innerText = data.name;
+    points[i].innerText = data.budget * 42;
   }
 }
+ */
 
 const uusipeli = document.querySelector('#new-game-button');
 uusipeli.addEventListener('click', function() {
