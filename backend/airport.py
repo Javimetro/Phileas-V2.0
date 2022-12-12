@@ -1,15 +1,18 @@
-import random
 import os
-#from game import Game
-from geopy.distance import geodesic
-import config
+import random
+
 import requests
+# from game import Game
+from geopy.distance import geodesic
+
+import config
 
 
 class Airport:
 
     def __init__(self, cur_icao):
         self.cur_icao = cur_icao
+
     def haeLatLong(self):
         sql = f'''select latitude_deg, longitude_deg from airport where ident="{self.cur_icao}"'''
         kursori = config.conn.cursor()
@@ -41,9 +44,8 @@ class Airport:
         tulos = kursori.fetchall()
         return tulos
 
-
     def vaihtoehdot(self, kilometrit):
-        #self.kilometrit = kilometrit
+        # self.kilometrit = kilometrit
         self.vaihtoehdot1 = []
         tulos = self.valikoima(kilometrit)
         for i in range(10):
@@ -65,7 +67,6 @@ class Airport:
             vaihtoehto['weather_humidity'] = weather['humidity']
             print(vaihtoehto)
         return self.vaihtoehdot1
-
 
     def city_country(self, icao):
         sql = f'''select airport.municipality, country.name from airport, country 
@@ -133,19 +134,17 @@ class Airport:
 
     def weather(self, icao):
         self.cur_icao = icao
-        apikey = 'b506dbf5aa172758d111318ced349bb3'
+        apikey = os.environ.get('API_KEY')
 
         request = "https://api.openweathermap.org/data/2.5/weather?lat=" + \
                   str(self.haeLatLong()[0][0]) + "&lon=" + str(
             self.haeLatLong()[0][1]) + "&appid=" + apikey + "&units=metric"
-        self.vastaus = requests.get(request).json()
-
-
-        self.json = {
-            'main' : self.vastaus["weather"][0]["main"],
-            'description' : self.vastaus["weather"][0]["description"],
-            'temp' : self.vastaus["main"]["temp"],
-            'humidity' : self.vastaus["main"]["humidity"],
+        vastaus = requests.get(request).json()
+        json = {
+            'main': vastaus["weather"][0]["main"],
+            'description': vastaus["weather"][0]["description"],
+            'temp': vastaus["main"]["temp"],
+            'humidity': vastaus["main"]["humidity"],
         }
 
-        return self.json
+        return json
