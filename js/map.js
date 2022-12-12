@@ -26,7 +26,7 @@ let id;
 async function newGame(evt) {
   evt.preventDefault();
   const nimi = document.querySelector('#player-input').value;
-  let newGameUrl = 'http://127.0.0.1:5000/newgame?name=' + nimi;
+  let newGameUrl = `${apiUrl}newgame?name=` + nimi;
   console.log(newGameUrl);
   const respons = await fetch(newGameUrl);
   const jso = await respons.json();
@@ -57,9 +57,10 @@ marker.bindPopup(h4);
 marker.openPopup();
 
 
-const url = 'http://127.0.0.1:5000/kilometria?id=1&km=';
+
 
 async function sade(evt) {
+  const url = `${apiUrl}kilometria?id=${id}&km=`;
   evt.preventDefault();
   document.querySelector('#kilometritSade').classList.add('hide');
 
