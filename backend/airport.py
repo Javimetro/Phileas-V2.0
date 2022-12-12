@@ -48,7 +48,7 @@ class Airport:
         tulos = self.valikoima(kilometrit)
         for i in range(10):
             self.vaihtoehdot1.append(random.choice(tulos))
-        if -75 < self.haeLatLong()[0][1] < 5:
+        if -75 < self.haeLatLong()[0][1] < 5 and self.cur_icao != "EGLC":
             self.vaihtoehdot1.append(self.londoncityairport())
         for vaihtoehto in self.vaihtoehdot1:
             dest_icao = vaihtoehto['ident']
