@@ -50,25 +50,25 @@ class Airport:
             self.vaihtoehdot1.append(random.choice(tulos))
         if -75 < self.haeLatLong()[0][1] < 5:
             self.vaihtoehdot1.append(self.londoncityairport())
-            print(self.vaihtoehdot1)
         for vaihtoehto in self.vaihtoehdot1:
-            print(vaihtoehto)
             dest_icao = vaihtoehto['ident']
             hinta = self.get_price(dest_icao)
             etaisyys = self.distance(dest_icao)
             vaihtoehto['price'] = round(hinta, 1)
             vaihtoehto['distance'] = int(etaisyys)
+            vaihtoehto['city'] = self.city_country(vaihtoehto['ident'])[0]
+            vaihtoehto['country'] = self.city_country(vaihtoehto['ident'])[1]
+            print(vaihtoehto)
         return self.vaihtoehdot1
 
 
-    def city_country(self):
+    def city_country(self, icao):
         sql = f'''select airport.municipality, country.name from airport, country 
-        where airport.ident="{self.cur_icao}" and airport.iso_country=country.iso_country;'''
+        where airport.ident="{icao}" and airport.iso_country=country.iso_country;'''
         kursori = config.conn.cursor()
         kursori.execute(sql)
-        tulos = kursori.fetchall()
-        for i in tulos:
-            print(f'{i[0]} ,{i[1]}')
+        tulos = kursori.fetchone()
+        return tulos
 
     def get_price(self, dest_icao):
         distanse = self.distance(dest_icao)
