@@ -92,6 +92,10 @@ async function sade(evt) {
     p.innerHTML = `Etäisyys: ${json.vaihtoehdot[i]['distance']} km`;
     popupContent.append(p);
 
+    const ma = document.createElement('p');
+    ma.innerHTML = `Maa: ${json.vaihtoehdot[i]['country']} `;
+    popupContent.append(ma);
+
     const sa = document.createElement('p');
     sa.innerHTML = `Sääennuste: ${json.vaihtoehdot[i]['weather_description']} `;
     popupContent.append(sa);
