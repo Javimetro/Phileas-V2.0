@@ -117,6 +117,10 @@ h2 {
     height: 2.5rem;
 }
 
+.syote {
+    text-align: center;
+}
+
 #submit-name:hover {
     cursor: pointer;
     border: 0.1rem solid #fffafa;
