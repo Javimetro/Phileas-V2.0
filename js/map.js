@@ -1,4 +1,5 @@
 'use strict';
+let marker, h4;
 
 //kartta
 const map = L.map('map', {tap: false});
@@ -23,6 +24,7 @@ let id;
 
 async function newGame(evt) {
   evt.preventDefault();
+  alkuperainenmarker();
   const nimi = document.querySelector('#player-input').value;
   let newGameUrl = `${apiUrl}newgame?name=${nimi}`;
   console.log(newGameUrl);
@@ -48,12 +50,13 @@ function togglePopup() {
   document.getElementById('popup-1').classList.toggle('active');
 }
 
-//pelaajan alkuperäinen sijainti
-let marker = L.marker([51.505299, 0.055278]).addTo(map);
-let h4 = document.createElement('h4');
-h4.innerText = 'London City Airport';
-marker.bindPopup(h4);
-marker.openPopup();
+function alkuperainenmarker() {
+  marker = L.marker([51.505299, 0.055278]).addTo(map);
+  h4 = document.createElement('h4');
+  h4.innerText = 'London City Airport';
+  marker.bindPopup(h4);
+  marker.openPopup();
+}
 
 async function sade(evt) {
   const url = `${apiUrl}kilometria?id=${id}&km=`;
@@ -75,7 +78,6 @@ async function sade(evt) {
     const kord2 = json.vaihtoehdot[i]['longitude_deg'];
     const icao = json.vaihtoehdot[i]['ident'];
     const price = json.vaihtoehdot[i]['price'];
-    console.log(price);
 
     //markerit ehdotetuille lentokentille
     const flyhere = L.marker([kord1, kord2]).addTo(map);
@@ -83,7 +85,6 @@ async function sade(evt) {
     flyhere.setIcon(suggested);
     markers.push(flyhere);
 
-    //markereiden sisällä näkyvä teksti
     let popupContent = document.createElement('div');
     h4 = document.createElement('h4');
     h4.innerText = json.vaihtoehdot[i]['name'];
@@ -113,7 +114,6 @@ async function sade(evt) {
     popupContent.append(ale);
 
     const nappi = document.createElement('button');
-    //nappi.classList.add('button');
     nappi.innerText = 'Lennä';
     popupContent.append(nappi);
     flyhere.bindPopup(popupContent);
@@ -131,9 +131,13 @@ async function sade(evt) {
         const flyHere = jso.location;
         console.log(flyHere);
         if (jso.gameover) {
-          alert ('Peli ohi')
-          await newGame(evt)
-          return
+          togglePopup3();
+          return;
+        }
+
+        if (flyHere === 'EGLC') {
+          console.log('voitit pelin, jee.');
+          togglePopup2();
         }
 
         document.querySelector('#budjetti').innerText = jso.budget;
@@ -162,28 +166,24 @@ async function sade(evt) {
 const nappi2 = document.querySelector('#paina');
 nappi2.addEventListener('click', sade);
 
-//leaderboard
-/* ei toimi, koska ei pysty hakemaan tietoa toisesta funktiosta jossa on evt
-async function togglePopup2() {
-  const taulu = document.getElementById('leaderboard');
-  taulu.classList.toggle('active');
-
-  const placement = document.querySelectorAll('#end-content h3');
-  const name = document.querySelectorAll('#end-content h4');
-  const points = document.querySelectorAll('#end-content p');
-
-  const data = await newGame();
-
-  for (let i = 0; i < 7; i++) {
-    placement[i].innerText = `${i + 1}.`;
-    name[i].innerText = data.name;
-    points[i].innerText = data.budget * 42;
-  }
+function togglePopup2() {
+  document.getElementById('leaderboard').classList.toggle('active');
+  const vikanappi1 = document.getElementById('new-game-button');
+  vikanappi1.addEventListener('click', function() {
+    document.querySelector('#player-input').value = '';
+    marker.remove(map);
+    document.querySelector('#leaderboard').classList.add('hide');
+    document.querySelector('#player-modal').classList.remove('hide');
+  });
 }
- */
 
-const uusipeli = document.querySelector('#new-game-button');
-uusipeli.addEventListener('click', function() {
-  console.log('uusi peli alkaa tästä!!!!!!!!!');
-  newGame()
-});
+function togglePopup3() {
+  document.getElementById('gameover').classList.toggle('active');
+  const vikanappi = document.getElementById('new-game-button2');
+  vikanappi.addEventListener('click', function() {
+    document.querySelector('#player-input').value = '';
+    marker.remove(map);
+    document.querySelector('#gameover').classList.add('hide');
+    document.querySelector('#player-modal').classList.remove('hide');
+  });
+}
