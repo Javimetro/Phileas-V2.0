@@ -62,13 +62,14 @@ def flyto():
     air = Airport(currentIcao)
     balance = currentGame.tarkista_budjetti()
     if price > balance:
-        return 'gameover'
+        return {'gameover':True}
     else:
         distance = air.distance(destination)
         print(distance)
         currentGame.fly(destination, price)
         currentGame.update_kilometrit(distance)
         status = currentGame.currentStatus()
+        status['gameover']=False
         print(status)
         return json.dumps(status)
 

@@ -126,6 +126,10 @@ async function sade(evt) {
         console.log(jso);
         const flyHere = jso.location;
         console.log(flyHere);
+        if (jso.gameover) {
+          alert ('Peli ohi')
+          return
+        }
 
         document.querySelector('#budjetti').innerText = jso.budget;
         document.querySelector('#vuorot').innerText = jso.times;

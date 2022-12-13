@@ -18,6 +18,7 @@ class Airport:
         kursori = config.conn.cursor()
         kursori.execute(sql)
         tulos = kursori.fetchall()
+        print(tulos[0][0])
 
         return tulos
 
@@ -135,10 +136,9 @@ class Airport:
     def weather(self, icao):
         self.cur_icao = icao
         apikey = os.environ.get('API_KEY')
+        print(apikey)
 
-        request = "https://api.openweathermap.org/data/2.5/weather?lat=" + \
-                  str(self.haeLatLong()[0][0]) + "&lon=" + str(
-            self.haeLatLong()[0][1]) + "&appid=" + apikey + "&units=metric"
+        request = "https://api.openweathermap.org/data/2.5/weather?lat=" + str(self.haeLatLong()[0][0]) + "&lon=" + str(self.haeLatLong()[0][1]) + "&appid=" + apikey + "&units=metric"
         vastaus = requests.get(request).json()
         json = {
             'main': vastaus["weather"][0]["main"],
