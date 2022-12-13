@@ -215,12 +215,3 @@ h2 {
     background-color: var(--text);
     border: 0.2rem solid var(--color);
 }
-
-.leader {
-    display: flex;
-    justify-content: space-evenly;
-}
-
-.leader h3, h4, p {
-    margin-top: 0;
-}

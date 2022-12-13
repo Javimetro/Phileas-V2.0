@@ -64,7 +64,7 @@
 </div>
 <div id="player-modal">
     <form id="player-form">
-        <input id="player-input" type="text" class= "syote" placeholder="Syötä nimesi" required>
+        <input id="player-input" type="text" class="syote" placeholder="Syötä nimesi" required>
         <input type="submit" id="submit-name" value="OK">
     </form>
 </div>
@@ -101,51 +101,30 @@
     </div>
 </div>
 <form id="kilometritSade">
-    <input id="tasta" name="q" type="text" class= "syote" placeholder="Kuinka monta kilometriä haluat lentää?" required>
+    <input id="tasta" name="q" type="text" class="syote" placeholder="Kuinka monta kilometriä haluat lentää?" required>
     <input type="submit" id="paina" value="Näytä tällä säteellä">
 </form>
 <div class="popup" id="leaderboard">
     <div class="overlay"></div>
     <div id="end-content" class="content">
         <div class="close-btn" onclick="togglePopup2()">&times;</div>
-        <h2>Leaderboard</h2>
-        <div class="leader">
-            <h3>1.</h3>
-            <h4>Phileas Fogg</h4>
-            <p>5000</p>
-        </div>
-        <div class="leader">
-            <h3>1.</h3>
-            <h4>Phileas Fogg</h4>
-            <p>5000</p>
-        </div>
-        <div class="leader">
-            <h3>1.</h3>
-            <h4>Phileas Fogg</h4>
-            <p>5000</p>
-        </div>
-        <div class="leader">
-            <h3>1.</h3>
-            <h4>Phileas Fogg</h4>
-            <p>5000</p>
-        </div>
-        <div class="leader">
-            <h3>1.</h3>
-            <h4>Phileas Fogg</h4>
-            <p>5000</p>
-        </div>
-        <div class="leader">
-            <h3>1.</h3>
-            <h4>Phileas Fogg</h4>
-            <p>5000</p>
-        </div>
-        <div class="leader">
-            <h3>1.</h3>
-            <h4>Phileas Fogg</h4>
-            <p>5000</p>
+        <h2>A winner is you!</h2>
+        <div>
+            <p>Saavut Lontoosen, tasan yksi minuutti ja yksi sekunti ennen aikasi loppumista. Sinua onnitellaan
+                vuolaasti. Jälleen kerran, olet todistanut olevasi maanmainio maailmanmatkaaja.</p>
         </div>
         <div class="board-buttons">
-            <button id="new-game-button" class="new">Uusi peli</button>
+            <button id="new-game-button" class="new">Yritä uudelleen</button>
+        </div>
+    </div>
+</div>
+<div class="popup" id="gameover">
+    <div class="overlay"></div>
+    <div class="content">
+        <h2>Peli ohi</h2>
+        <p>Näyttää siltä, että budjettisi loppui ja hävisit vedon. Joudut palaamaan häpeissäsi Lontooseen.</p>
+        <div class="board-buttons">
+            <button id="new-game-button2" class="new">Yritä uudelleen</button>
         </div>
     </div>
 </div>
