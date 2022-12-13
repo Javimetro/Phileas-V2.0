@@ -92,6 +92,10 @@ async function sade(evt) {
     p.innerHTML = `Etäisyys: ${json.vaihtoehdot[i]['distance']} km`;
     popupContent.append(p);
 
+    const sa = document.createElement('p');
+    sa.innerHTML = `Sääennuste: ${json.vaihtoehdot[i]['weather_description']} `;
+    popupContent.append(sa);
+
     const hinta = document.createElement('p');
     hinta.innerHTML = `Hinta: ${json.vaihtoehdot[i]['price']} €`;
     popupContent.append(hinta);
@@ -128,6 +132,7 @@ async function sade(evt) {
         console.log(flyHere);
         if (jso.gameover) {
           alert ('Peli ohi')
+          await newGame(evt)
           return
         }
 
@@ -180,4 +185,5 @@ async function togglePopup2() {
 const uusipeli = document.querySelector('#new-game-button');
 uusipeli.addEventListener('click', function() {
   console.log('uusi peli alkaa tästä!!!!!!!!!');
+  newGame()
 });
