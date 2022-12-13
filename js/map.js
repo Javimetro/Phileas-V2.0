@@ -1,5 +1,5 @@
 'use strict';
-let marker, h4;
+let marker, h4, id;
 
 const map = L.map('map', {tap: false});
 L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
@@ -10,41 +10,36 @@ map.setView([53, 24], 5);
 
 const apiUrl = 'http://127.0.0.1:5000/';
 
-//pelaajan nimi
 document.querySelector('#player-form').
     addEventListener('submit', function(evt) {
       evt.preventDefault();
-      const nimi = document.querySelector('#player-input').value;
       document.querySelector('#player-modal').classList.add('hide');
       togglePopup();
     });
 
-let id;
-
 async function newGame(evt) {
+  document.querySelector('#budjetti').innerText = '0';
+  document.querySelector('#vuorot').innerText = '0';
+  document.querySelector('#raha').innerText = '0';
+  document.querySelector('#kilometrit').innerText = '0';
+
   evt.preventDefault();
   alkuperainenmarker();
   const nimi = document.querySelector('#player-input').value;
   let newGameUrl = `${apiUrl}newgame?name=${nimi}`;
-  console.log(newGameUrl);
   const respons = await fetch(newGameUrl);
   const jso = await respons.json();
-  console.log(jso);
 
   document.querySelector('#player-name').innerText = jso.name;
   document.querySelector('#budjetti').innerText = jso.budget;
 
   id = jso.id;
-  console.log(id);
   return jso;
 }
-
-console.log(id);
 
 const nappi3 = document.querySelector('#player-form');
 nappi3.addEventListener('submit', newGame);
 
-//Nappi (tarina&ohjeet)
 function togglePopup() {
   document.getElementById('popup-1').classList.toggle('active');
 }
@@ -67,9 +62,6 @@ async function sade(evt) {
 
   const response = await fetch(sadeUrl);
   const json = await response.json();
-  console.log(json);
-  const sade = json.km_lkm;
-  //lista ehdotettujen lentokenttien markereille
   const markers = [];
 
   for (let i = 0; i < json.vaihtoehdot.length; i++) {
@@ -78,7 +70,6 @@ async function sade(evt) {
     const icao = json.vaihtoehdot[i]['ident'];
     const price = json.vaihtoehdot[i]['price'];
 
-    //markerit ehdotetuille lentokentille
     const flyhere = L.marker([kord1, kord2]).addTo(map);
     const suggested = L.divIcon({className: 'suggested-icon'});
     flyhere.setIcon(suggested);
@@ -127,19 +118,15 @@ async function sade(evt) {
 
       async function flyto() {
         const flyToUrl = `${apiUrl}flyto?id=${id}&dest=${icao}&price=${price}`;
-        console.log(flyToUrl);
         const respons = await fetch(flyToUrl);
         const jso = await respons.json();
-        console.log(jso);
         const flyHere = jso.location;
-        console.log(flyHere);
         if (jso.gameover) {
           togglePopup3();
           return;
         }
 
         if (flyHere === 'EGLC') {
-          console.log('voitit pelin, jee.');
           togglePopup2();
         }
 
